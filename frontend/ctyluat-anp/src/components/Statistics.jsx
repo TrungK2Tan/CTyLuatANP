@@ -52,27 +52,28 @@ const StatisticCard = ({ icon, targetNumber, label, animation }) => {
 
 const Statistics = () => {
   return (
-    <div className="px-4 col-span-2 grid grid-cols-3 gap-8 items-center relative z-10">
-    <StatisticCard
-      icon={Person}
-      targetNumber={12.596}
-      label="Khách hàng"
-      animation={{ initial: { opacity: 0, y: 50 } }} // Từ dưới lên
-    />
-    <StatisticCard
-      icon={Success}
-      targetNumber={8132}
-      label="Hoàn thành"
-      animation={{ initial: { opacity: 0, y: -50 } }} // Từ trên xuống
-    />
-    <StatisticCard
-      icon={Exp}
-      targetNumber={16}
-      label="Kinh nghiệm"
-      animation={{ initial: { opacity: 0, x: 50 } }} // Từ phải vào
-    />
-  </div>
+    <div className="px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 items-center relative z-10 w-full">
+      <StatisticCard
+        icon={Person}
+        targetNumber={12.596}
+        label="Khách hàng"
+        animation={{ initial: { opacity: 0, y: 50 } }}
+      />
+      <StatisticCard
+        icon={Success}
+        targetNumber={8132}
+        label="Hoàn thành"
+        animation={{ initial: { opacity: 0, y: -50 } }}
+      />
+      <StatisticCard
+        icon={Exp}
+        targetNumber={16}
+        label="Kinh nghiệm"
+        animation={{ initial: { opacity: 0, x: 50 } }}
+      />
+    </div>
   );
 };
+
 
 export default Statistics;

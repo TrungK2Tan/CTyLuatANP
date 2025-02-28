@@ -46,29 +46,27 @@ const MissionStatement = () => {
         >
           {testimonials.map((item) => (
             <SwiperSlide key={item.id}>
-              <div className="pb-4 bg-white shadow-lg rounded-lg p-6 flex flex-col lg:flex-row items-start lg:w-[100%] mx-auto">
-                <div className="w-[30%] ml-10">
+              <div className="pb-4 bg-white shadow-lg rounded-lg p-6 flex flex-col md:flex-row items-center md:items-start md:w-[100%] mx-auto">
+                <div className="w-full md:w-[30%] flex justify-center md:justify-start mb-4 md:mb-0">
                   <img
                     src={item.image}
                     alt="Building"
-                    className="w-full h-[380px] object-cover rounded-lg"
+                    className="w-[80%] md:w-full h-[280px] md:h-[380px] object-cover rounded-lg"
                   />
                 </div>
-                <div className="lg:w-[70%] text-gray-700 px-4 ml-10 mr-20">
-                  <div className="flex justify-start mt-2">
+                <div className="w-full md:w-[70%] text-gray-700 px-4 text-center md:text-left">
+                  <div className="flex justify-center md:justify-start mt-2">
                     <FaQuoteLeft className="text-[52px] text-gray-200" />
                   </div>
-                  <p className="ml-16 mr-16 italic text-lg leading-relaxed text-left">
+                  <p className="italic text-lg leading-relaxed">
                     {item.quote}
                   </p>
-                 
-                  <div className="flex justify-end mt-2">
+                  <div className="flex justify-center md:justify-end mt-2">
                     <FaQuoteRight className="text-[52px] text-gray-200" />
                   </div>
-                  <p className="ml-16 mt-4 text-blue-600 text-xl font-semibold text-left">
+                  <p className="mt-4 text-blue-600 text-xl font-semibold">
                     {item.author}
                   </p>
-                  
                 </div>
               </div>
             </SwiperSlide>

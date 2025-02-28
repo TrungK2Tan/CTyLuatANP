@@ -37,7 +37,7 @@ const Company = () => {
 
       {/* Phần Breadcrumb (đường dẫn) */}
       <div className="bg-gray-100 py-4 mt-20 pt-10 pb-10">
-        <div className="container mx-auto w-[70%] flex items-center text-lg">
+        <div className="container mx-auto w-[90%] md:w-[70%] flex items-center text-lg">
           <a className="text-blue-500 hover:underline" href="/">
             Trang Chủ
           </a>
@@ -51,10 +51,10 @@ const Company = () => {
       </div>
 
       {/* Bố cục nội dung chính */}
-      <div className="container mx-auto w-[70%] py-10 flex flex-row gap-16 flex-grow">
+      <div className="container mx-auto w-[90%] md:w-[70%] py-10 flex flex-col md:flex-row gap-10">
         {/* Cột nội dung chính - 40% */}
-        <div className="w-[65%] flex-grow">
-          <h1 className="text-3xl font-bold mb-6 text-left text-blue-900">
+        <div className="w-full md:w-[65%]">
+        <h1 className="text-3xl font-bold mb-6 text-blue-900">
             CÔNG TY LUẬT TNHH ANP
           </h1>
 
@@ -192,7 +192,7 @@ const Company = () => {
         </div>
 
         {/* Cột nội dung phụ - 40% */}
-        <div className="w-[25%] flex flex-col gap-6">
+        <div className="w-full md:w-[25%] flex flex-col gap-6">
           {/* Ô tìm kiếm và dịch vụ luật sư */}
           <div className=" p-6 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold text-gray-800 mb-4 border-b border-gray-300 pb-2 relative after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-16 after:h-[3px] after:bg-blue-500">
@@ -202,7 +202,7 @@ const Company = () => {
               <input
                 type="text"
                 placeholder="Nhập từ khóa..."
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               />
               <button
                 type="submit"
@@ -248,15 +248,9 @@ const Company = () => {
             {/* Danh sách bài viết */}
             <div className="space-y-4">
               {posts.map((post, index) => (
-                <div key={index} className="flex items-start space-x-3 mt-10">
-                  <img
-                    src={post.image}
-                    alt="Bài viết"
-                    width={120}
-                    height={120}
-                    className="w-32 h-32 object-cover rounded"
-                  />
-                  <p className="text-gray-700 text-[14px]">{post.title}</p>
+                <div key={index} className="flex items-start space-x-3 mt-5">
+                   <img src={post.image} alt="Bài viết" className="w-20 h-20 object-cover rounded" />
+                   <p className="text-gray-700 text-sm">{post.title}</p>
                 </div>
               ))}
             </div>

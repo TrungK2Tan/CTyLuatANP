@@ -1,4 +1,4 @@
-import { FaChevronLeft, FaChevronRight, FaChevronDown} from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight, FaChevronDown } from "react-icons/fa";
 
 import DatDai from "../../img/item/dat-dai.png";
 import DoanhNghiep from "../../img/item/doanh-nghiep.png";
@@ -62,7 +62,7 @@ export default function Home() {
     triggerOnce: false, // Chạy lại mỗi khi xuất hiện
     threshold: 0.2, // Kích hoạt khi 20% phần tử hiển thị trên màn hình
   });
-  
+
   //FQA
   const [openIndex, setOpenIndex] = useState(null);
 
@@ -92,42 +92,42 @@ export default function Home() {
     },
   ];
   return (
-    <div className="relative w-full h-screen">
+    <div className="relative w-full min-h-screen">
       {/* Navbar */}
       <Header />
       {/* Carousel */}
-      <div className="relative w-full h-[500px] mt-24">
+      <div className="relative w-full h-[300px] md:h-[500px] mt-20">
         <img
           src="./src/img/banner2.jpg"
           alt="Law Image"
           className="w-full h-full object-cover"
         />
-        <button className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white p-2 rounded-full">
+        <button className="absolute left-2 top-1/2 -translate-y-1/2 bg-gray-700 text-white p-2 rounded-full">
           <FaChevronLeft />
         </button>
-        <button className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-700 text-white p-2 rounded-full">
+        <button className="absolute right-2 top-1/2 -translate-y-1/2 bg-gray-700 text-white p-2 rounded-full">
           <FaChevronRight />
         </button>
       </div>
       {/* About Us */}
-      <section className="py-8 bg-white text-center mb-10">
-        <div className="container mx-auto w-[70%]">
-          <h2 className="text-[45px] font-bold text-red-500 text-center ">
+      <section className="py-8 bg-white text-center">
+        <div className="container mx-auto px-4 md:w-3/4">
+          <h2 className="text-3xl md:text-4xl font-bold text-red-500">
             VỀ CHÚNG TÔI
           </h2>
-          <div className="flex justify-center mb-10">
+          <div className="flex justify-center my-4">
             <img
               src="./src/img/heading-bottom-border.png"
-              className="w-[40%] max-w-xs"
+              className="w-40"
               alt="Heading border"
             />
           </div>
 
           {/* Wrapper chứa cả văn bản và hình ảnh */}
-          <div className="relative flex flex-col md:flex-row items-stretch justify-between gap-10">
+          <div className="flex flex-col md:flex-row gap-8 items-center">
             {/* Cột Văn bản */}
-            <div className="flex-1 text-left max-w-2xl h-full">
-              <p className="font-bold text-lg text-gray-700 leading-loose h-full">
+            <div className="flex-1 text-left text-gray-700">
+              <p className="font-bold text-lg text-gray-700 leading-loose ">
                 Công ty Luật TNHH ANP được thành lập theo Giấy chứng nhận đăng
                 ký số 01021463/TP/ĐKHĐ cấp năm 2018 của Sở Tư pháp Hà Nội, với
                 sự tâm huyết của những Luật sư có kinh nghiệm hành nghề, nguyên
@@ -156,133 +156,132 @@ export default function Home() {
                 <br />
                 Email: congtyluatanp.hcm@gmail.com
               </p>
+              <button className="mt-6 px-6 py-3 bg-blue-500 text-white font-bold rounded-lg shadow-md hover:bg-orange-500 transition duration-700">
+                Tìm hiểu thêm
+              </button>
             </div>
 
             {/* Cột Hình ảnh */}
-            <div className="flex-1 flex justify-center self-stretch">
+            <div className="flex-1">
               <img
                 src="./src/img/about.jpg"
                 alt="About Us"
-                className="w-full rounded-lg shadow-lg object-cover mr-10"
+                className="w-full rounded-lg shadow-lg"
               />
             </div>
-
-            {/* Nút "Tìm hiểu thêm" ở góc trái dưới cột văn bản & hình ảnh */}
-            <button  className="absolute left-0 -bottom-12 px-6 py-3 rounded bg-blue-500 text-white font-bold shadow-md hover:bg-orange-500 transition duration-700">
-              Tìm hiểu thêm
-            </button>
           </div>
         </div>
       </section>
       {/* Law Services */}
       <section className="py-12 bg-gray-100 text-center">
-        <div className="container mx-auto w-[70%]">
-          <h2 className="text-[45px] font-bold text-red-500 text-center">
+        <div className="container mx-auto px-4 md:w-3/4">
+          <h2 className="text-3xl md:text-4xl font-bold text-red-500">
             DỊCH VỤ LUẬT SƯ
           </h2>
           <div className="flex justify-center mb-10">
             <img
               src="./src/img/heading-bottom-border.png"
-              className="w-[40%] max-w-xs"
+              className="w-120"
               alt="Heading border"
             />
           </div>
 
           {/* Service Cards */}
-          <div className="grid md:grid-cols-3 gap-8 px-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-6">
             {services.map((service, index) => (
               <div
                 key={index}
-                className="bg-white rounded-lg shadow-lg p-6 text-center transition duration-300 hover:shadow-2xl hover:-translate-y-2"
+                className="bg-white rounded-lg shadow-lg p-6 text-center hover:shadow-2xl transition-all"
               >
                 <div className="flex justify-center mb-4">{service.icon}</div>
-                <h3 className="text-xl font-bold mb-3">{service.title}</h3>
+                <h3 className="text-xl font-bold mb-2">{service.title}</h3>
                 <p className="text-gray-600 mb-4">{service.description}</p>
-                <button className="relative px-6 py-3 rounded-lg bg-blue-500 text-white font-bold shadow-md overflow-hidden transition-all duration-700 ease-in-out hover:bg-orange-500 hover:translate-y-1">
-                  <span className="relative z-10">CHI TIẾT</span>
-                  <span className="absolute inset-0 bg-white opacity-0 translate-y-[-100%] transition-all duration-700 ease-in-out hover:opacity-100 hover:translate-y-0"></span>
+                <button className="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-orange-500 transition">
+                  Chi tiết
                 </button>
               </div>
             ))}
           </div>
         </div>
       </section>
-      {/* Banner Bottom */}
-      <div className="relative w-full h-[440px]">
-        {/* Hình ảnh nền */}
-        <img
-          src="./src/img/background.jpg"
-          alt="Law Image"
-          className="w-full h-full object-cover"
-        />
-        {/* Lớp phủ màu đen với opacity */}
-        <div className="absolute inset-0 bg-black/80 flex items-center justify-center h-full w-full">
-          <div className="container w-[70%] mx-auto mt-8">
-            {/* Grid chia thành 3 phần */}
-            <div className="grid grid-cols-3 gap-6 px-6 min-h-[400px] pb-12">
-              {/* Cột nội dung (chiếm 1 phần) */}
-              <div className="text-white text-left">
-                <motion.div
-                  ref={ref} // Gán ref để theo dõi phần tử
-                  initial={{ opacity: 0, x: -100 }} // Bắt đầu từ bên trái
-                  animate={
-                    inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -100 }
-                  } // Khi nhìn thấy, chạy hiệu ứng
-                  transition={{ duration: 1, ease: "easeOut" }} // Hiệu ứng mượt trong 1 giây
-                  className="text-white text-left"
-                >
-                  <h2 className="text-3xl md:text-[40px] font-bold">
-                    CHÚNG TÔI Ở ĐÂY
-                  </h2>
-                  <p className="text-xl md:text-[18px] font-normal mt-10 mb-10 ">
-                    Để giải đáp mọi vướng mắc về pháp luật cho bạn. <br />
-                    Quyền lợi của bạn là ưu tiên hàng đầu của chúng tôi, <br />
-                    Hãy gửi yêu cầu nếu bạn cần luật sư giải quyết mọi vấn đề
-                    pháp lý của mình.
-                  </p>
-                  <button className="py-2 px-6 bg-blue-500 text-white text-lg font-bold shadow-lg transition-all duration-700 ease-in-out hover:bg-orange-500 hover:translate-y-1">
-                    Gửi yêu cầu
-                  </button>
-                </motion.div>
-              </div>
-              {/* Cột thống kê (chiếm 2 phần) */}
+      {/* Banner Bottom Responsive */}
+      <div
+        className="relative w-full min-h-[500px] md:min-h-[500px] flex items-center justify-center bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('./src/img/background.jpg')" }}
+      >
+        {/* Lớp phủ màu đen */}
+        <div className="absolute inset-0 bg-black/80"></div>
+
+        {/* Container chính */}
+        <div className="relative z-10 container w-[90%] md:w-[80%] lg:w-[70%] mx-auto px-4">
+          {/* Layout chính */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 min-h-[400px] pb-12">
+            {/* Cột nội dung */}
+            <motion.div
+              initial={{ opacity: 0, x: -100 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1, ease: "easeOut" }}
+              className="text-white text-center md:text-left md:w-1/2"
+            >
+              <h2 className="text-3xl md:text-[40px] font-bold">
+                CHÚNG TÔI Ở ĐÂY
+              </h2>
+              <p className="text-lg md:text-xl font-normal mt-6 mb-6 leading-relaxed">
+                Để giải đáp mọi vướng mắc về pháp luật cho bạn. <br />
+                Quyền lợi của bạn là ưu tiên hàng đầu của chúng tôi. <br />
+                Hãy gửi yêu cầu nếu bạn cần luật sư giải quyết vấn đề pháp lý
+                của mình.
+              </p>
+              <button className="py-2 px-6 bg-blue-500 text-white text-lg font-bold shadow-lg transition-all duration-700 ease-in-out hover:bg-orange-500 hover:translate-y-1">
+                Gửi yêu cầu
+              </button>
+            </motion.div>
+
+            {/* Cột thống kê */}
+            <div className="w-full md:w-1/2 flex justify-center">
               <Statistics />
             </div>
           </div>
         </div>
       </div>
-      {/*Activiti */}
+
+      {/*Activiti  */}
       <MissionStatement />
-      {/*News */}
+      {/*News   */}
       <News />
       {/*FQA */}
+      {/* FAQ Section */}
       <section className="py-8 bg-white text-center mb-10">
-        <div className="container mx-auto w-[70%]">
-          <div className="relative flex flex-col md:flex-row items-stretch justify-between gap-10">
+        <div className="container mx-auto w-[90%] md:w-[70%]">
+          <div className="relative flex flex-col md:flex-row items-stretch justify-between gap-6 md:gap-10">
             {/* Cột Hình ảnh */}
-            <div className="flex-1 flex justify-center self-stretch">
+            <div className="flex-1 flex justify-center">
               <img
                 src="./src/img/about.jpg"
                 alt="About Us"
-                className="w-full rounded-lg shadow-lg object-cover mr-10"
+                className="w-full max-w-xs md:max-w-sm rounded-lg shadow-lg object-cover"
               />
             </div>
             {/* Cột Văn bản */}
-            <div className="flex-1 text-left max-w-2xl h-full">
-              <h2 className="text-red-500 font-bold text-2xl">FQA</h2>
+            <div className="flex-1 text-left max-w-2xl">
+              <h2 className="text-red-500 font-bold text-xl md:text-2xl">
+                FQA
+              </h2>
               <p className="font-bold text-lg text-gray-700 mb-4">
                 CÁC VẤN ĐỀ THƯỜNG HAY GẶP PHẢI
               </p>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {faqs.map((faq, index) => (
-                  <div key={index} className="border  p-3 bg-white shadow-md">
+                  <div key={index} className="border p-3 bg-white shadow-md">
                     <div
-                      className={`flex items-center justify-between cursor-pointer p-2 transition-colors duration-300 
-                ${openIndex === index ? "text-blue-500" : "text-gray-800"} 
-                hover:text-blue-500`}
+                      className={`flex items-center justify-between cursor-pointer p-2 transition-all duration-300 
+                    ${openIndex === index ? "text-blue-500" : "text-gray-800"} 
+                    hover:text-blue-500`}
                       onClick={() => toggleFAQ(index)}
                     >
-                      <span className="font-bold text-xl">{faq.question}</span>
+                      <span className="font-bold text-lg md:text-xl">
+                        {faq.question}
+                      </span>
                       {openIndex === index ? (
                         <FaChevronDown />
                       ) : (
@@ -292,10 +291,10 @@ export default function Home() {
                     {openIndex === index && (
                       <>
                         <hr className="border-t border-gray-300 my-2" />
-                        <div className="font-medium text-[20px] mt-2 text-gray-600">
+                        <div className="text-gray-600 text-base md:text-lg mt-2">
                           {faq.answer}
                         </div>
-                        <div className="font-medium text-[20px] mt-2 text-gray-600">
+                        <div className="text-gray-600 text-base md:text-lg mt-2">
                           {faq.answer2}
                         </div>
                       </>
@@ -308,8 +307,8 @@ export default function Home() {
         </div>
       </section>
       {/*Footer */}
-      <Footer/>
-      {/*COpy right */}
+      <Footer />
+      {/*Coopy right */}
       <div className="bg-blue-950 w-full">
         <div className="container mx-auto text-white w-[70%] border-t border-white pt-4 flex justify-between text-lg py-4">
           <span>Copyright © 2021 congtyluatanp.com . All rights reserved.</span>
