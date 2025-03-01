@@ -1,20 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-import AdminSidebar from "./components/AdminSidebar";
+import AdminSidebar from "../components/AdminSidebar";
 
-const HomeAdmin = () => {
-  const navigate = useNavigate();
+const QuestionManagement = () => {
   const [admin, setAdmin] = useState({});
 
   useEffect(() => {
-    // Lấy dữ liệu từ localStorage
     const storedAdmin = JSON.parse(localStorage.getItem("admin"));
     if (storedAdmin) {
       setAdmin(storedAdmin);
-    } else {
-      navigate("/admin/login"); // Nếu không có thông tin admin, chuyển về trang đăng nhập
     }
-  }, [navigate]);
+  }, []);
 
   return (
     <div className="flex h-screen">
@@ -23,10 +18,11 @@ const HomeAdmin = () => {
 
       {/* Main Content */}
       <div className="w-3/4 p-6 bg-gray-100">
-        <Outlet />
+        <h1 className="text-2xl font-bold">⚖️ Quản lý hỏi đáp pháp luật</h1>
+        <p>Trang này dành cho quản lý hỏi đáp pháp luật.</p>
       </div>
     </div>
   );
 };
 
-export default HomeAdmin;
+export default QuestionManagement;

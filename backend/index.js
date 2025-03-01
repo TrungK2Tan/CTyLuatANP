@@ -142,52 +142,59 @@ app.post("/forms", async (req, res) => {
     res.status(500).json({ error: "Lỗi tạo biểu mẫu", details: error.message });
   }
 });
-// Sửa biểu mẫu theo slug
-app.put("/forms/:slug", async (req, res) => {
+
+// API Cập nhật biểu mẫu có hỗ trợ file upload
+app.put(
+  "/forms/:slug",
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "file", maxCount: 1 },
+  ]),
+  async (req, res) => {
     try {
-      const { title, description, image, content, fileUrl } = req.body;
-  
-      // Kiểm tra nếu biểu mẫu tồn tại
+      const { title, description, content } = req.body;
       let form = await Form.findOne({ slug: req.params.slug });
       if (!form) {
         return res.status(404).json({ error: "Không tìm thấy biểu mẫu" });
       }
-  
-      // Nếu có thay đổi title, cập nhật slug
       let newSlug = form.slug;
       if (title && title !== form.title) {
         newSlug = slugify(title, { lower: true, strict: true });
       }
-  
+      const image = req.files["image"]
+        ? `http://localhost:8000/uploads/${req.files["image"][0].filename}`
+        : form.image;
+      const fileUrl = req.files["file"]
+        ? `http://localhost:8000/uploads/${req.files["file"][0].filename}`
+        : form.fileUrl;
       form = await Form.findOneAndUpdate(
         { slug: req.params.slug },
         { title, slug: newSlug, description, image, content, fileUrl },
-        { new: true } // Trả về object mới sau khi cập nhật
+        { new: true }
       );
-  
       res.json({ message: "Cập nhật biểu mẫu thành công", form });
     } catch (error) {
       console.error("❌ Lỗi khi cập nhật biểu mẫu:", error);
       res.status(500).json({ error: "Lỗi server", details: error.message });
     }
-  });
-  
-  // Xóa biểu mẫu theo slug
-  app.delete("/forms/:slug", async (req, res) => {
-    try {
-      const form = await Form.findOneAndDelete({ slug: req.params.slug });
-  
-      if (!form) {
-        return res.status(404).json({ error: "Không tìm thấy biểu mẫu" });
-      }
-  
-      res.json({ message: "Đã xóa biểu mẫu thành công" });
-    } catch (error) {
-      console.error("❌ Lỗi khi xóa biểu mẫu:", error);
-      res.status(500).json({ error: "Lỗi server", details: error.message });
+  }
+);
+
+// Xóa biểu mẫu theo slug
+app.delete("/forms/:slug", async (req, res) => {
+  try {
+    const form = await Form.findOneAndDelete({ slug: req.params.slug });
+
+    if (!form) {
+      return res.status(404).json({ error: "Không tìm thấy biểu mẫu" });
     }
-  });
-  
+
+    res.json({ message: "Đã xóa biểu mẫu thành công" });
+  } catch (error) {
+    console.error("❌ Lỗi khi xóa biểu mẫu:", error);
+    res.status(500).json({ error: "Lỗi server", details: error.message });
+  }
+});
 
 // API Lấy danh sách biểu mẫu
 app.get("/forms", async (req, res) => {
@@ -214,7 +221,7 @@ app.get("/forms/:slug", async (req, res) => {
   }
 });
 
-// API Upload file DOC
+// API Upload file (Hỗ trợ ảnh & tài liệu)
 app.post("/upload", upload.single("file"), (req, res) => {
   if (!req.file)
     return res.status(400).json({ error: "Không có file được tải lên" });
