@@ -2,13 +2,27 @@
 @import "slick-carousel/slick/slick.css";
 @import "slick-carousel/slick/slick-theme.css";
 
-
-@layer base{
-  html{
+@layer base {
+  html {
     font-family: Arial, Helvetica, sans-serif;
   }
-  body{
+  body {
     background-color: #fdfeff;
     overflow-x: hidden;
   }
 }
+
+@layer components {
+  .input-box {
+    @apply w-full text-lg bg-cyan-600/10 rounded-xl px-6 py-4 mb-5 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition-all;
+  }
+
+  .input-label {
+    @apply text-lg font-medium text-gray-600;
+  }
+
+  .btn-primary {
+    @apply w-full text-lg font-semibold text-white bg-blue-500 shadow-lg p-4 rounded-xl transition-all hover:bg-blue-600 active:scale-95;
+  }
+}
+

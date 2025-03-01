@@ -1,36 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom"; // Import Link
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import Banner from "../../img/detail_banner.png";
-import MauDon from "../../img/maudon.png";
-
-// Dữ liệu biểu mẫu
-const forms = [
-  {
-    title: "Mẫu đơn khởi kiện dân sự",
-    description:
-      "Mẫu đơn khởi kiện vụ án hành chính do công ty Luật ANP cung cấp cho Quý bạn đọc, liên hệ luật sư của chúng tôi để được hướng...",
-    image: MauDon,
-    link: "#",
-  },
-  {
-    title: "Mẫu đơn ly hôn",
-    description:
-      "Mẫu đơn ly hôn dành cho các trường hợp thuận tình hoặc đơn phương, giúp bạn thực hiện các thủ tục một cách chính xác...",
-    image: MauDon,
-    link: "#",
-  },
-  {
-    title: "Mẫu hợp đồng lao động",
-    description:
-      "Mẫu hợp đồng lao động chuẩn theo quy định của pháp luật, bảo vệ quyền lợi giữa người lao động và người sử dụng lao động...",
-    image: MauDon,
-    link: "#",
-  },
-];
 
 const Form = () => {
+  const [forms, setForms] = useState([]);
+
+  // Gọi API lấy danh sách biểu mẫu
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/forms")
+      .then((response) => {
+        setForms(response.data);
+      })
+      .catch((error) => {
+        console.error("Lỗi lấy danh sách biểu mẫu:", error);
+      });
+  }, []);
+
   return (
     <div className="relative w-full min-h-screen flex flex-col">
       <Header />
@@ -46,38 +36,41 @@ const Form = () => {
       {/* Danh sách biểu mẫu */}
       <div className="container mx-auto px-4 py-10 w-[70%]">
         <motion.div
-          initial={{ opacity: 0, y: 50 }} // Bắt đầu từ dưới lên
-          animate={{ opacity: 1, y: 0 }} // Kết thúc ở vị trí ban đầu
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="grid grid-cols-1 md:grid-cols-3 gap-6"
         >
-          {forms.map((form, index) => (
-            <motion.div
-              key={index}
-              className="bg-white shadow-lg rounded-lg overflow-hidden"
-              whileHover={{ scale: 1.05, transition: { type: "spring", stiffness: 300 } }} // Hiệu ứng nảy lên khi hover
-            >
-              <img
-                src={form.image}
-                alt={form.title}
-                className="w-full h-52 object-cover"
-              />
-              <div className="p-4">
-                <h3 className="text-lg font-semibold text-gray-800">
-                  {form.title}
-                </h3>
-                <p className="text-sm text-gray-600 mt-2">
-                  {form.description}
-                </p>
-                <a
-                  href={form.link}
-                  className="mt-3 inline-block text-white bg-blue-600 px-4 py-2 rounded-lg text-sm font-bold shadow-md hover:bg-orange-500 transition duration-700"
-                >
-                  Xem tiếp →
-                </a>
-              </div>
-            </motion.div>
-          ))}
+          {forms.length > 0 ? (
+            forms.map((form, index) => (
+              <motion.div
+                key={index}
+                className="bg-white shadow-lg rounded-lg overflow-hidden"
+              >
+                <img
+                  src={form.image}
+                  alt={form.title}
+                  className="w-full h-52 object-cover"
+                />
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold text-gray-800">
+                    {form.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 mt-2">
+                    {form.description}
+                  </p>
+                  <Link
+                    to={`/danhmuc/bieu-mau/${form.slug}`}
+                    className="mt-3 inline-block text-white bg-blue-600 px-4 py-2 rounded-lg text-sm font-bold shadow-md hover:bg-orange-500 transition duration-700"
+                  >
+                    Xem Tiếp →
+                  </Link>
+                </div>
+              </motion.div>
+            ))
+          ) : (
+            <p className="text-gray-500">Không có biểu mẫu nào!</p>
+          )}
         </motion.div>
       </div>
 
