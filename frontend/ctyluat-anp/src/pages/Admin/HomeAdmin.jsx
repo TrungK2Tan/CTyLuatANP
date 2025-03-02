@@ -18,11 +18,11 @@ const HomeAdmin = () => {
 
   return (
     <div className="flex h-screen">
-      {/* Sidebar */}
+      {/* Sidebar cố định */}
       <AdminSidebar admin={admin} />
 
-      {/* Main Content */}
-      <div className="w-3/4 p-6 bg-gray-100">
+      {/* Main Content - Đẩy sang phải để không bị che */}
+      <div className="flex-1 p-6 bg-gray-100 overflow-auto">
         <Outlet />
       </div>
     </div>

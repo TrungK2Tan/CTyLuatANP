@@ -24,6 +24,10 @@ import ServicesManagement from "./pages/Admin/ManagementServices/ServicesManagem
 import FormDetailManagement from "./pages/Admin/Forms/FormDetailManagement";
 import EditForm from "./pages/Admin/Forms/EditForm";
 import EditProfile from "./pages/Admin/ProfileAdmin/EditProfile";
+import NewsDetail from "./pages/News/NewsDetail";
+import NewsDetailManagement from "./pages/Admin/ManagementNews/NewsDetailManagement";
+import EditNews from "./pages/Admin/ManagementNews/EditNews";
+import CreateNews from "./pages/Admin/ManagementNews/CreateNews";
 
 const PrivateRoute = ({ element }) => {
   const token = localStorage.getItem("token");
@@ -43,6 +47,7 @@ const AppContent = () => {
         <Route path="/danhmuc/bieu-mau" exact element={<Form />} />
         <Route path="/danhmuc/bieu-mau/:slug" element={<FormDetail />} />
         <Route path="/danhmuc/tin-tuc" exact element={<News />} />
+        <Route path="/danhmuc/tin-tuc/:slug" exact element={<NewsDetail />} />
         <Route path="/danhmuc/lien-he" exact element={<Contact />} />
 
         {/* Admin Routes */}
@@ -76,6 +81,18 @@ const AppContent = () => {
         <Route
           path="/admin/quan-ly-tin-tuc"
           element={<PrivateRoute exact element={<NewsManagement />} />}
+        />
+           <Route
+          path="/admin/quan-ly-tin-tuc/:slug"
+          element={<PrivateRoute exact element={<NewsDetailManagement />} />}
+        />
+           <Route
+          path="/admin/quan-ly-tin-tuc/sua/:slug"
+          element={<PrivateRoute exact element={<EditNews />} />}
+        />
+           <Route
+          path="/admin/tao-tin-tuc"
+          element={<PrivateRoute exact element={<CreateNews />} />}
         />
         {/* Quản lý hỏi đáp  */}
         <Route

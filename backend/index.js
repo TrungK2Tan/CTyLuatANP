@@ -11,6 +11,7 @@ const slugify = require("slugify");
 
 const User = require("./models/user.model");
 const Form = require("./models/form.model");
+const News = require("./models/news.model")
 const { authenticateToken } = require("./utilities");
 
 mongoose.connect(config.connectionString);
@@ -75,7 +76,6 @@ app.post("/create-account", async (req, res) => {
     message: "Registration Successful",
   });
 });
-
 // Login
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
@@ -148,7 +148,6 @@ app.put("/update-user", authenticateToken, async (req, res) => {
     return res.status(500).json({ error: true, message: "Internal Server Error" });
   }
 });
-
 //  API Thêm biểu mẫu mới
 app.post("/forms", async (req, res) => {
   const { title, description, image, content, fileUrl } = req.body;
@@ -178,7 +177,6 @@ app.post("/forms", async (req, res) => {
     res.status(500).json({ error: "Lỗi tạo biểu mẫu", details: error.message });
   }
 });
-
 // API Cập nhật biểu mẫu có hỗ trợ file upload
 app.put(
   "/forms/:slug",
@@ -215,7 +213,6 @@ app.put(
     }
   }
 );
-
 // Xóa biểu mẫu theo slug
 app.delete("/forms/:slug", async (req, res) => {
   try {
@@ -231,7 +228,6 @@ app.delete("/forms/:slug", async (req, res) => {
     res.status(500).json({ error: "Lỗi server", details: error.message });
   }
 });
-
 // API Lấy danh sách biểu mẫu
 app.get("/forms", async (req, res) => {
   try {
@@ -242,7 +238,6 @@ app.get("/forms", async (req, res) => {
     res.status(500).json({ error: "Lỗi server" });
   }
 });
-
 // API Lấy chi tiết biểu mẫu theo slug
 app.get("/forms/:slug", async (req, res) => {
   try {
@@ -256,13 +251,103 @@ app.get("/forms/:slug", async (req, res) => {
     res.status(500).json({ error: "Lỗi server", details: error.message });
   }
 });
-
 // API Upload file (Hỗ trợ ảnh & tài liệu)
 app.post("/upload", upload.single("file"), (req, res) => {
   if (!req.file)
     return res.status(400).json({ error: "Không có file được tải lên" });
   const fileUrl = `http://localhost:8000/uploads/${req.file.filename}`;
   res.json({ fileUrl });
+});
+//Tao bai viet
+app.post("/news", async (req, res) => {
+  const { title, description, image, content } = req.body;
+
+  if (!title || !description || !image || !content) {
+    return res.status(400).json({ error: "Thiếu thông tin bài viết" });
+  }
+
+  try {
+    const slug = slugify(title, { lower: true, strict: true });
+
+    const newNews = new News({
+      title,
+      slug,
+      description,
+      image,
+      content,
+    });
+
+    await newNews.save();
+    res.status(201).json({ message: "Thêm bài viết thành công", news: newNews });
+  } catch (error) {
+    console.error("❌ Lỗi khi tạo bài viết:", error);
+    res.status(500).json({ error: "Lỗi server", details: error.message });
+  }
+});
+// ✅ API Lấy danh sách bài viết News
+app.get("/news", async (req, res) => {
+  try {
+    const newsList = await News.find();
+    res.json(newsList);
+  } catch (error) {
+    console.error("❌ Lỗi lấy danh sách bài viết:", error);
+    res.status(500).json({ error: "Lỗi server" });
+  }
+});
+// ✅ API Lấy bài viết News theo slug
+app.get("/news/:slug", async (req, res) => {
+  try {
+    const news = await News.findOne({ slug: req.params.slug });
+    if (!news) {
+      return res.status(404).json({ error: "Không tìm thấy bài viết" });
+    }
+    res.json(news);
+  } catch (error) {
+    console.error("❌ Lỗi lấy bài viết:", error);
+    res.status(500).json({ error: "Lỗi server", details: error.message });
+  }
+});
+// ✅ API Cập nhật bài viết theo slug
+app.put("/news/:slug", async (req, res) => {
+  try {
+    const { title, description, image, content } = req.body;
+    let news = await News.findOne({ slug: req.params.slug });
+    if (!news) {
+      return res.status(404).json({ error: "Không tìm thấy bài viết" });
+    }
+
+    let newSlug = news.slug;
+    if (title && title !== news.title) {
+      newSlug = slugify(title, { lower: true, strict: true });
+    }
+
+    news = await News.findOneAndUpdate(
+      { slug: req.params.slug },
+      { title, slug: newSlug, description, image, content },
+      { new: true }
+    );
+
+    res.json({ message: "Cập nhật bài viết thành công", news });
+  } catch (error) {
+    console.error("❌ Lỗi khi cập nhật bài viết:", error);
+    res.status(500).json({ error: "Lỗi server", details: error.message });
+  }
+});
+
+// ✅ API Xóa bài viết theo slug
+app.delete("/news/:slug", async (req, res) => {
+  try {
+    const news = await News.findOneAndDelete({ slug: req.params.slug });
+
+    if (!news) {
+      return res.status(404).json({ error: "Không tìm thấy bài viết" });
+    }
+
+    res.json({ message: "Đã xóa bài viết thành công" });
+  } catch (error) {
+    console.error("❌ Lỗi khi xóa bài viết:", error);
+    res.status(500).json({ error: "Lỗi server", details: error.message });
+  }
 });
 //serve static files from the uploads and assets directory
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
