@@ -23,6 +23,7 @@ import QuestionManagement from "./pages/Admin/ManagementQuestion/QuestionManagem
 import ServicesManagement from "./pages/Admin/ManagementServices/ServicesManagement";
 import FormDetailManagement from "./pages/Admin/Forms/FormDetailManagement";
 import EditForm from "./pages/Admin/Forms/EditForm";
+import EditProfile from "./pages/Admin/ProfileAdmin/EditProfile";
 
 const PrivateRoute = ({ element }) => {
   const token = localStorage.getItem("token");
@@ -46,14 +47,46 @@ const AppContent = () => {
 
         {/* Admin Routes */}
         <Route path="/admin/login" exact element={<LoginAdmin />} />
-        <Route path="/admin" element={<PrivateRoute exact element={<HomeAdmin />} />} />
-        <Route path="/admin/quan-ly-bieu-mau" element={<PrivateRoute exact element={<FormManagement />} />} />
-        <Route path="/admin/quan-ly-bieu-mau/:slug" element={<FormDetailManagement />} />
-        <Route path="/admin/quan-ly-bieu-mau/sua/:slug" element={<EditForm />} />
-        <Route path="/admin/tao-bieu-mau" element={<PrivateRoute exact element={<CreateForm />} />} />
-        <Route path="/admin/quan-ly-tin-tuc" element={<PrivateRoute exact element={<NewsManagement />} />} />
-        <Route path="/admin/hoi-dap-phap-luat" element={<PrivateRoute exact element={<QuestionManagement />} />} />
-        <Route path="/admin/dich-vu-luat-su" element={<PrivateRoute exact element={<ServicesManagement />} />} />
+        <Route
+          path="/admin"
+          element={<PrivateRoute exact element={<HomeAdmin />} />}
+        />
+          <Route
+          path="/admin/chinh-sua-thong-tin"
+          element={<PrivateRoute exact element={<EditProfile />} />}
+        />
+        {/* Quản lý biểu mẫu  */}
+        <Route
+          path="/admin/quan-ly-bieu-mau"
+          element={<PrivateRoute exact element={<FormManagement />} />}
+        />
+        <Route
+          path="/admin/quan-ly-bieu-mau/:slug"
+          element={<FormDetailManagement />}
+        />
+        <Route
+          path="/admin/quan-ly-bieu-mau/sua/:slug"
+          element={<EditForm />}
+        />
+        <Route
+          path="/admin/tao-bieu-mau"
+          element={<PrivateRoute exact element={<CreateForm />} />}
+        />
+        {/* Quản lý tin tức  */}
+        <Route
+          path="/admin/quan-ly-tin-tuc"
+          element={<PrivateRoute exact element={<NewsManagement />} />}
+        />
+        {/* Quản lý hỏi đáp  */}
+        <Route
+          path="/admin/hoi-dap-phap-luat"
+          element={<PrivateRoute exact element={<QuestionManagement />} />}
+        />
+        {/* Quản lý dịch vụ  */}
+        <Route
+          path="/admin/dich-vu-luat-su"
+          element={<PrivateRoute exact element={<ServicesManagement />} />}
+        />
       </Routes>
 
       {/* Chỉ hiển thị FloatingIcons nếu KHÔNG phải trang admin */}

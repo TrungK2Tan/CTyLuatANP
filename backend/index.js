@@ -112,6 +112,42 @@ app.post("/login", async (req, res) => {
     accessToken,
   });
 });
+app.put("/update-user", authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId; // Lấy ID từ token
+    const { fullName, phone, dob, gender, password } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ error: true, message: "User not found" });
+
+    if (fullName) user.fullName = fullName;
+    if (phone) user.phone = phone;
+    if (dob) user.dob = new Date(dob);
+    if (gender) user.gender = gender;
+
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      user.password = hashedPassword;
+    }
+
+    await user.save();
+
+    return res.json({
+      error: false,
+      message: "Profile updated successfully",
+      user: {
+        fullName: user.fullName,
+        email: user.email,
+        phone: user.phone,
+        dob: user.dob,
+        gender: user.gender,
+      },
+    });
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    return res.status(500).json({ error: true, message: "Internal Server Error" });
+  }
+});
 
 //  API Thêm biểu mẫu mới
 app.post("/forms", async (req, res) => {
