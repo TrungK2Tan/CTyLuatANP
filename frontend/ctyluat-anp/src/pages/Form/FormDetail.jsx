@@ -13,11 +13,11 @@ import {
   FaUser,
 } from "react-icons/fa";
 import { FaFacebookF, FaTwitter } from "react-icons/fa6";
-
+import { Link } from "react-router-dom";
 const FormDetail = () => {
     const { slug } = useParams();
     const [form, setForm] = useState(null);
-  
+  const [latestNews, setLatestNews] = useState([]);
     useEffect(() => {
         axios
           .get(`http://localhost:8000/forms/${slug}`)
@@ -28,6 +28,18 @@ const FormDetail = () => {
             console.error("Lỗi lấy biểu mẫu:", error);
             setForm(null); // Xử lý trường hợp lỗi
           });
+          const fetchNewsList = async () => {
+            try {
+              const response = await axios.get("http://localhost:8000/news");
+              const allNews = response.data;
+      
+              // Lấy 5 bài viết mới nhất
+              setLatestNews(allNews.slice(-5));
+            } catch (error) {
+              console.error("Lỗi khi lấy danh sách bài viết:", error);
+            }
+          };
+          fetchNewsList();
       }, [slug]);
       
   
@@ -193,22 +205,23 @@ const FormDetail = () => {
             <h2 className="text-xl font-semibold text-gray-900 mb-4 border-b pb-2">
               BÀI VIẾT MỚI NHẤT
             </h2>
-
-            {/* Danh sách bài viết */}
             <div className="space-y-4">
-              {[
-                { title: "Hướng dẫn thủ tục ly hôn", image: Banner },
-                { title: "Cách giải quyết tranh chấp đất đai", image: Banner },
-                { title: "Quy trình đăng ký kinh doanh", image: Banner },
-              ].map((post, index) => (
-                <div key={index} className="flex items-start space-x-3">
-                  <img
-                    src={post.image}
-                    alt={post.title}
-                    className="w-16 h-16 object-cover rounded-lg shadow-md"
-                  />
-                  <p className="text-gray-700 text-sm hover:text-blue-500 cursor-pointer">
-                    {post.title}
+              {latestNews.map((post) => (
+                <div key={post._id} className="flex items-start space-x-3">
+                  <Link
+                    to={`/danhmuc/tin-tuc/${post.slug}`}
+                    className="shrink-0"
+                  >
+                    <img
+                      src={post.image}
+                      alt={post.title}
+                      className="w-16 h-16 object-cover rounded-lg shadow-md"
+                    />
+                  </Link>
+                  <p className="text-gray-700 text-sm hover:text-blue-500 cursor-pointer line-clamp-2 w-[calc(100%-4.5rem)]">
+                    <Link to={`/danhmuc/tin-tuc/${post.slug}`}>
+                      {post.title}
+                    </Link>
                   </p>
                 </div>
               ))}

@@ -71,11 +71,13 @@ const News = () => {
                 transition: { type: "spring", stiffness: 300 },
               }}
             >
+              <Link to={`/danhmuc/tin-tuc/${item.slug}`}>
               <img
                 src={item.image}
                 alt={item.title}
                 className="w-full h-80 object-cover"
               />
+              </Link>
               <div className="p-4">
                 <h3 className="text-lg font-semibold text-gray-800">
                   {item.title}
