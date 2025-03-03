@@ -28,6 +28,8 @@ import NewsDetail from "./pages/News/NewsDetail";
 import NewsDetailManagement from "./pages/Admin/ManagementNews/NewsDetailManagement";
 import EditNews from "./pages/Admin/ManagementNews/EditNews";
 import CreateNews from "./pages/Admin/ManagementNews/CreateNews";
+import Services from "./pages/Services/Services";
+import ServiceDetail from "./pages/Services/ServicesDetail";
 
 const PrivateRoute = ({ element }) => {
   const token = localStorage.getItem("token");
@@ -49,7 +51,8 @@ const AppContent = () => {
         <Route path="/danhmuc/tin-tuc" exact element={<News />} />
         <Route path="/danhmuc/tin-tuc/:slug" exact element={<NewsDetail />} />
         <Route path="/danhmuc/lien-he" exact element={<Contact />} />
-
+        <Route path="/danh-muc/:categorySlug/:serviceSlug" element={<Services />} />
+        <Route path="/:postSlug" element={<ServiceDetail />} />
         {/* Admin Routes */}
         <Route path="/admin/login" exact element={<LoginAdmin />} />
         <Route

@@ -123,56 +123,18 @@ const Company = () => {
             * GIÁ TRỊ CỐT LÕI CỦA CÔNG TY LUẬT ANP
           </h2>
           <p className="text-lg text-gray-700 mt-2">
-            Suốt những năm hoạt động và phụng sự cho khách hàng, công ty Luật
-            ANP luôn đặt ra sứ mệnh và thực hiện theo đúng Giá trị cốt lõi mà
-            công ty đã xây dựng{" "}
-            <strong className="text-red-500">"TÂM – TẦM – TÀI – TÍN"</strong>để
-            dẫn lối cho những hành động của đội ngũ luật sư ANP và những kỳ vọng
-            mà chúng tôi đặt vào bản thân mình cũng như kỳ vọng khách hàng đặt
-            niềm tin tại công ty. Thực hiện đúng kim chỉ nam mà người lãnh đạo
-            công ty luật ANP đã đặt ra{" "}
-            <strong className="text-red-500">
-              “Người bảo vệ công lý cần phải có một trái tim nóng, một cái đầu
-              lạnh và một bàn tay sạch”.
-            </strong>
-            <p className="text-lg text-gray-700 mt-2">
-              <strong className="text-red-500">TÂM:</strong>Làm việc bằng tinh
-              thần trách nhiệm, nhiệt huyết, kỹ năng chuyên môn cao trong nghiệp
-              vụ tư vấn, xử lý và giải quyết, chúng tôi luôn phân tích, nhận
-              định các chứng cứ một cách khách quan, thẳng thắn và tìm ra những
-              phương án tối ưu, đảm bảo vì lợi ích hợp pháp của khách hàng. Mỗi
-              cá nhân tại công ty luật ANP cam kết các chuẩn mực đạo đức nghề
-              nghiệp để phụng sự cho khách hàng, mang lại một xã hội công bằng,
-              am hiểu pháp luật.
-            </p>
-            <p className="text-lg text-gray-700 mt-2">
-              <strong className="text-red-500"> TẦM:</strong>
-              Mục tiêu phát triển lâu dài, định hướng đến là công ty Luật đa
-              dịch vụ có uy tín trong và ngoài nước, xây dựng thương hiệu ANP
-              trở thành công ty Luật chuyên nghiệp, mang tầm quốc tế. Dưới sự
-              dẫn dắt của người lãnh đạo ANP, chúng tôi sẽ luôn xây dựng những
-              mục tiêu, lâu dài, giải pháp tối ưu, tốt đẹp; mang lại giá trị cho
-              khách hàng, cộng đồng và xã hội.
-            </p>
-            <p className="text-lg text-gray-700 mt-2">
-              <strong className="text-red-500"> TÀI: </strong>
-              Đội ngũ luật sư của công ty luật ANP là những cá nhân có chuyên
-              môn cao, kỹ năng, kinh nghiệm hành nghề lâu năm, nhiệt huyết trong
-              việc đi tìm công lý, lẽ phải cho khách hàng, đấu tranh cho cái ác
-              bảo vệ công bằng cho xã hội và mang lại lợi ích hợp pháp cho khách
-              hàng. Với những vụ kiện, tranh tụng khó cũng là cơ hội cho đội ngũ
-              nhân lực được trải nghiệm bổ sung các kiến thức cần thiết và nâng
-              cao nghiệp vụ chuyên nghiệp hơn.
-            </p>
-            <p className="text-lg text-gray-700 mt-2">
-              <strong className="text-red-500"> TÍN:</strong>
-              Để trở thành điểm tựa đáng tin cậy cho khách hàng đó chính là sự
-              nổ lực không ngừng nghỉ của đội ngũ luật sư ANP trong việc xây
-              dựng niềm tin, đặt sự uy tín vào mỗi vụ án của khách hàng. Cam kết
-              thực hiện đúng những nguyên tắc đã thỏa thuận với khách hàng ngay
-              từ giai đoạn ban đầu.
-            </p>
-          </p>
+  Suốt những năm hoạt động và phụng sự cho khách hàng, công ty Luật
+  ANP luôn đặt ra sứ mệnh và thực hiện theo đúng Giá trị cốt lõi mà
+  công ty đã xây dựng{" "}
+  <strong className="text-red-500">"TÂM – TẦM – TÀI – TÍN"</strong> để
+  dẫn lối cho những hành động của đội ngũ luật sư ANP...
+</p>
+
+<div className="text-lg text-gray-700 mt-2">
+  <strong className="text-red-500">TÂM:</strong> Làm việc bằng tinh
+  thần trách nhiệm...
+</div>
+
           <p className="text-xl font-bold">---</p>
           <strong className="text-xl">CÔNG TY LUẬT TNHH ANP:</strong>
           <p className="text-lg font-medium  mt-2">

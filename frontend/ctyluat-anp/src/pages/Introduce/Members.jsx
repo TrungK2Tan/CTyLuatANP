@@ -40,7 +40,7 @@ const Members = () => {
       <div className="container mx-auto px-4 py-10 w-[70%]">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {members.map((member, index) => (
-            <div className="group bg-white shadow-lg rounded-lg overflow-hidden relative">
+            <div key={index} className="group bg-white shadow-lg rounded-lg overflow-hidden relative">
               {/* Ảnh Luật Sư */}
               <img
                 src={member.image}

@@ -8,10 +8,11 @@ const jwt = require("jsonwebtoken");
 const path = require("path");
 const upload = require("./multer");
 const slugify = require("slugify");
-
+const CategoryServices = require("./models/categoryServices.model");
+const PostServices = require("./models/postServices.model");
 const User = require("./models/user.model");
 const Form = require("./models/form.model");
-const News = require("./models/news.model")
+const News = require("./models/news.model");
 const { authenticateToken } = require("./utilities");
 
 mongoose.connect(config.connectionString);
@@ -118,7 +119,8 @@ app.put("/update-user", authenticateToken, async (req, res) => {
     const { fullName, phone, dob, gender, password } = req.body;
 
     const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ error: true, message: "User not found" });
+    if (!user)
+      return res.status(404).json({ error: true, message: "User not found" });
 
     if (fullName) user.fullName = fullName;
     if (phone) user.phone = phone;
@@ -145,7 +147,9 @@ app.put("/update-user", authenticateToken, async (req, res) => {
     });
   } catch (error) {
     console.error("Error updating profile:", error);
-    return res.status(500).json({ error: true, message: "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ error: true, message: "Internal Server Error" });
   }
 });
 //  API Thêm biểu mẫu mới
@@ -278,7 +282,9 @@ app.post("/news", async (req, res) => {
     });
 
     await newNews.save();
-    res.status(201).json({ message: "Thêm bài viết thành công", news: newNews });
+    res
+      .status(201)
+      .json({ message: "Thêm bài viết thành công", news: newNews });
   } catch (error) {
     console.error("❌ Lỗi khi tạo bài viết:", error);
     res.status(500).json({ error: "Lỗi server", details: error.message });
@@ -348,6 +354,185 @@ app.delete("/news/:slug", async (req, res) => {
     res.status(500).json({ error: "Lỗi server", details: error.message });
   }
 });
+// 📌 Thêm danh mục mới
+app.post("/categories", async (req, res) => {
+  const { name, services } = req.body;
+  if (!name || !services) {
+    return res.status(400).json({ error: "Thiếu thông tin bắt buộc" });
+  }
+
+  try {
+    const slug = slugify(name, { lower: true, strict: true });
+    const newCategory = new CategoryServices({ name, slug, services });
+    await newCategory.save();
+    res
+      .status(201)
+      .json({ message: "Thêm danh mục thành công", category: newCategory });
+  } catch (error) {
+    res.status(500).json({ error: "Lỗi server", details: error.message });
+  }
+});
+// 📌 Lấy danh sách danh mục
+app.get("/categories", async (req, res) => {
+  try {
+    const categories = await CategoryServices.find();
+    res.json(categories);
+  } catch (error) {
+    console.error("❌ Lỗi lấy danh sách danh mục:", error);
+    res.status(500).json({ error: "Lỗi server" });
+  }
+});
+
+// 📌 Thêm bài viết mới theo dịch vụ trong danh mục
+app.post("/services", async (req, res) => {
+  const { service_slug, title, image, description, content } = req.body;
+
+  if (!service_slug || !title || !description || !content) {
+    return res.status(400).json({ error: "Thiếu thông tin bài viết" });
+  }
+
+  try {
+    // 🔹 Tìm danh mục chứa dịch vụ có `service_slug`
+    const category = await CategoryServices.findOne({ "services.slug": service_slug });
+
+    if (!category) {
+      return res.status(404).json({ error: "Không tìm thấy danh mục chứa dịch vụ này" });
+    }
+
+    const category_id = category._id; // Lấy `category_id` từ danh mục tìm được
+    const slug = slugify(title, { lower: true, strict: true });
+
+    // 🔹 Kiểm tra xem bài viết đã tồn tại chưa
+    const existingPost = await PostServices.findOne({ slug });
+    if (existingPost) {
+      return res.status(400).json({ error: "Bài viết với tiêu đề này đã tồn tại" });
+    }
+
+    // 🔹 Tạo bài viết mới
+    const newPost = new PostServices({
+      category_id,
+      service_slug,
+      title,
+      slug,
+      image,
+      description,
+      content,
+    });
+
+    await newPost.save();
+    res.status(201).json({ message: "Thêm bài viết thành công", post: newPost });
+  } catch (error) {
+    console.error("❌ Lỗi thêm bài viết:", error);
+    res.status(500).json({ error: "Lỗi server", details: error.message });
+  }
+});
+//Lay thong tin bai viet theo service
+app.get("/posts/:serviceSlug", async (req, res) => {
+  try {
+    const { serviceSlug } = req.params;
+
+    // 🔹 Tìm danh mục chứa dịch vụ có `serviceSlug`
+    const category = await CategoryServices.findOne({ "services.slug": serviceSlug });
+
+    if (!category) {
+      return res.status(404).json({ error: "Không tìm thấy danh mục chứa dịch vụ này" });
+    }
+
+    // 🔹 Lấy danh sách bài viết thuộc dịch vụ này
+    const posts = await PostServices.find({ service_slug: serviceSlug })
+      .populate("category_id", "name slug"); // Populate thêm danh mục
+
+    res.json({
+      service: {
+        name: category.services.find((s) => s.slug === serviceSlug)?.name || "",
+        slug: serviceSlug,
+      },
+      posts,
+    });
+  } catch (error) {
+    console.error("❌ Lỗi lấy danh sách bài viết theo dịch vụ:", error);
+    res.status(500).json({ error: "Lỗi server", details: error.message });
+  }
+});
+//Lay thong tin bai viet thuoc danh muc do
+app.get("/services/:categorySlug", async (req, res) => {
+  try {
+    const { categorySlug } = req.params;
+
+    // 🔹 Tìm danh mục theo `slug`
+    const category = await CategoryServices.findOne({ slug: categorySlug });
+
+    if (!category) {
+      return res.status(404).json({ error: "Không tìm thấy danh mục" });
+    }
+
+    // 🔹 Tìm tất cả bài viết thuộc danh mục đó
+    const services = await PostServices.find({ category_id: category._id })
+      .select("-content") // Không trả về nội dung đầy đủ trong danh sách
+      .populate("category_id", "name slug");
+
+    res.json({
+      category: {
+        _id: category._id,
+        name: category.name,
+        slug: category.slug,
+      },
+      services,
+    });
+  } catch (error) {
+    console.error("❌ Lỗi lấy danh sách dịch vụ:", error);
+    res.status(500).json({ error: "Lỗi server", details: error.message });
+  }
+});
+// 📌 Lấy chi tiết một bài viết theo slug
+app.get("/service/:slug", async (req, res) => {
+  try {
+    const { slug } = req.params;
+
+    // 🔹 Tìm bài viết theo `slug` và populate thông tin danh mục
+    const service = await PostServices.findOne({ slug }).populate("category_id", "name slug");
+
+    if (!service) {
+      return res.status(404).json({ error: "Không tìm thấy bài viết" });
+    }
+
+    res.json(service);
+  } catch (error) {
+    console.error("❌ Lỗi lấy bài viết:", error);
+    res.status(500).json({ error: "Lỗi server", details: error.message });
+  }
+});
+app.get("/categories/:categorySlug/posts", async (req, res) => {
+  try {
+    const { categorySlug } = req.params;
+
+    // 🔹 Tìm danh mục theo slug
+    const category = await CategoryServices.findOne({ slug: categorySlug });
+
+    if (!category) {
+      return res.status(404).json({ error: "Không tìm thấy danh mục" });
+    }
+
+    // 🔹 Lấy tất cả bài viết thuộc danh mục đó
+    const posts = await PostServices.find({ category_id: category._id })
+      .populate("category_id", "name slug") // Populate danh mục để lấy thông tin
+      .select("-content"); // Không trả về nội dung đầy đủ
+
+    res.json({
+      category: {
+        _id: category._id,
+        name: category.name,
+        slug: category.slug,
+      },
+      posts,
+    });
+  } catch (error) {
+    console.error(" Lỗi lấy danh sách bài viết theo danh mục:", error);
+    res.status(500).json({ error: "Lỗi server", details: error.message });
+  }
+});
+
+
 //serve static files from the uploads and assets directory
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.listen(8000, () => {

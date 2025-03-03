@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { FaChevronDown, FaBars, FaTimes } from "react-icons/fa";
+import axios from "axios";
 import Logo from "../img/logo-anp(1).png";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
@@ -13,10 +16,15 @@ const Header = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/categories")
+      .then((response) => setCategories(response.data))
+      .catch((error) => console.error("Lỗi lấy danh mục:", error));
+  }, []);
+
   const toggleDropdown = (index) => {
-    if (isMobile) {
-      setOpenDropdown(openDropdown === index ? null : index);
-    }
+    setOpenDropdown(openDropdown === index ? null : index);
   };
 
   return (
@@ -28,7 +36,10 @@ const Header = () => {
         </a>
 
         {/* Nút mở menu trên mobile */}
-        <button className="lg:hidden text-2xl" onClick={() => setMenuOpen(!menuOpen)}>
+        <button
+          className="lg:hidden text-2xl"
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
           {menuOpen ? <FaTimes /> : <FaBars />}
         </button>
 
@@ -38,73 +49,100 @@ const Header = () => {
             menuOpen ? "block" : "hidden"
           } lg:flex flex-col lg:flex-row absolute lg:static top-24 left-0 w-full lg:w-auto bg-white shadow-lg lg:shadow-none transition-all duration-300 lg:space-x-8 text-[18px] font-semibold`}
         >
-          {[
-            { label: "Trang chủ", href: "/" },
-            {
-              label: "Giới thiệu",
-              dropdown: true,
-              items: [
-                { label: "CÔNG TY LUẬT TNHH ANP", href: "/danhmuc/ve-chung-toi" },
-                { label: "Đội ngũ luật sư", href: "/danhmuc/doi-ngu-luat-su" },
-              ],
-            },
-            {
-              label: "Dịch vụ luật sư",
-              dropdown: true,
-              items: [
-                { label: "Luật Dân Sự", href: "/dich-vu/luat-dan-su" },
-                { label: "Luật Hình Sự", href: "/dich-vu/luat-hinh-su" },
-                { label: "Luật Hôn Nhân Gia Đình", href: "/dich-vu/hon-nhan-gia-dinh" },
-                { label: "Tranh Chấp Đất Đai", href: "/dich-vu/tranh-chap-dat-dai" },
-                { label: "Kinh Doanh Thương Mại", href: "/dich-vu/kinh-doanh-thuong-mai" },
-                { label: "Tư Vấn Thừa Kế", href: "/dich-vu/tu-van-thua-ke" },
-              ],
-            },
-            {
-              label: "Hỏi đáp pháp luật",
-              dropdown: true,
-              items: [
-                { label: "Hỏi Đáp Luật Dân Sự", href: "/hoi-dap/dan-su" },
-                { label: "Hỏi Đáp Hôn Nhân Gia Đình", href: "/hoi-dap/hon-nhan" },
-                { label: "Hỏi Đáp Pháp Luật Hình Sự", href: "/hoi-dap/hinh-su" },
-                { label: "Hỏi Đáp Pháp Luật Đất Đai", href: "/hoi-dap/dat-dai" },
-                { label: "Hỏi Đáp Pháp Luật Thừa Kế", href: "/hoi-dap/thua-ke" },
-                { label: "Hỏi Đáp Hành Chính", href: "/hoi-dap/hanh-chinh" },
-              ],
-            },
-            { label: "Biểu mẫu", href: "/danhmuc/bieu-mau" },
-            { label: "Tin tức", href: "/danhmuc/tin-tuc" },
-            { label: "Liên hệ", href: "/danhmuc/lien-he" },
-          ].map((item, index) => (
-            <li key={index} className="relative group px-6 py-4 lg:px-0 lg:py-0">
-              {item.dropdown ? (
-                <button
-                  onClick={() => toggleDropdown(index)}
-                  className="flex items-center gap-2 hover:text-blue-500 cursor-pointer w-full text-left lg:hover:bg-gray-100"
+          <li>
+            <a href="/" className="hover:text-blue-500">
+              Trang chủ
+            </a>
+          </li>
+
+          {/* Mục "Giới thiệu" */}
+          <li className="relative group px-6 py-4 lg:px-0 lg:py-0">
+            <button
+              onClick={() => toggleDropdown("about")}
+              className="flex items-center gap-2 hover:text-blue-500 cursor-pointer"
+            >
+              Giới thiệu{" "}
+              <FaChevronDown
+                className="transition-transform duration-300"
+                style={{
+                  transform:
+                    openDropdown === "about" ? "rotate(180deg)" : "rotate(0)",
+                }}
+              />
+            </button>
+            {(isMobile ? openDropdown === "about" : true) && (
+              <ul className="lg:absolute left-0 top-full pt-2 bg-white shadow-lg p-2 rounded min-w-max lg:hidden group-hover:lg:block">
+                <li className="px-3 py-2 text-sm hover:bg-gray-100 hover:text-blue-500">
+                  <a href="/danhmuc/ve-chung-toi">CÔNG TY LUẬT TNHH ANP</a>
+                </li>
+                <li className="px-3 py-2 text-sm hover:bg-gray-100 hover:text-blue-500">
+                  <a href="/danhmuc/doi-ngu-luat-su">Đội ngũ luật sư</a>
+                </li>
+              </ul>
+            )}
+          </li>
+
+          {/* Render danh mục từ API (ở cùng cấp với menu tĩnh) */}
+          {categories.map((category, index) => (
+            <li
+              key={index}
+              className="relative group px-6 py-4 lg:px-0 lg:py-0"
+            >
+              <button
+                onClick={() => toggleDropdown(index)}
+                className="flex items-center gap-2 hover:text-blue-500 cursor-pointer"
+              >
+                {category.name}{" "}
+                <FaChevronDown
+                  className="transition-transform duration-300"
+                  style={{
+                    transform:
+                      openDropdown === index ? "rotate(180deg)" : "rotate(0)",
+                  }}
+                />
+              </button>
+
+              {/* Danh sách dịch vụ (services) hiển thị khi hover vào danh mục */}
+              {category.services && category.services.length > 0 && (
+                <ul
+                  className={`${
+                    openDropdown === index ? "block" : "hidden"
+                  } lg:absolute left-0 top-full pt-2 bg-white shadow-lg p-2 rounded min-w-max lg:hidden group-hover:lg:block`}
                 >
-                  {item.label} <FaChevronDown className="transition-transform duration-300" style={{ transform: openDropdown === index ? "rotate(180deg)" : "rotate(0)" }} />
-                </button>
-              ) : (
-                <a href={item.href} className="hover:text-blue-500">
-                  {item.label}
-                </a>
-              )}
-
-              {/* Hiệu ứng underline */}
-              <span className="absolute left-0 bottom-[-6px] w-full h-[3px] bg-blue-500 transform scale-x-0 transition-transform duration-500 origin-right group-hover:origin-left group-hover:scale-x-100"></span>
-
-              {/* Dropdown menu */}
-              {item.dropdown && (isMobile ? openDropdown === index : true) && (
-                <ul className="lg:absolute left-0 top-full mt-2 bg-white shadow-lg p-2 rounded min-w-max lg:hidden group-hover:lg:block">
-                  {item.items.map((subItem, subIndex) => (
-                    <li key={subIndex} className="px-3 py-2 text-sm hover:bg-gray-100 hover:text-blue-500">
-                      <a href={subItem.href}>{subItem.label}</a>
+                  {category.services.map((service, sIndex) => (
+                    <li
+                      key={sIndex}
+                      className="px-3 py-2 text-sm hover:bg-gray-100 hover:text-blue-500"
+                    >
+                      <Link
+                        to={`/danh-muc/${category.slug}/${service.slug}`}
+                        className="flex items-center gap-2 hover:text-blue-500 cursor-pointer"
+                      >
+                        <p>{service.name}</p>
+                      </Link>
                     </li>
                   ))}
                 </ul>
               )}
             </li>
           ))}
+
+          {/* Các mục menu tĩnh khác */}
+          <li>
+            <a href="/danhmuc/bieu-mau" className="hover:text-blue-500">
+              Biểu mẫu
+            </a>
+          </li>
+          <li>
+            <a href="/danhmuc/tin-tuc" className="hover:text-blue-500">
+              Tin tức
+            </a>
+          </li>
+          <li>
+            <a href="/danhmuc/lien-he" className="hover:text-blue-500">
+              Liên hệ
+            </a>
+          </li>
         </ul>
       </div>
     </nav>
