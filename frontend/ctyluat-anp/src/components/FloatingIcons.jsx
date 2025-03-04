@@ -1,6 +1,6 @@
 import { FaPhoneAlt, FaArrowUp } from "react-icons/fa";
 import { motion } from "framer-motion";
-import Zalo from "../img/zalo.jpg";
+import Zalo from "../img/Zalo.png";
 
 const FloatingIcons = () => {
   const scrollToTop = () => {
@@ -16,7 +16,7 @@ const FloatingIcons = () => {
           href="https://zalo.me/0903601234"
           target="_blank"
           rel="noopener noreferrer"
-          className="relative w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition"
+          className="relative w-14 h-14 flex items-center justify-center transition"
           animate={{ rotate: [0, 10, -10, 0] }}
           transition={{ repeat: Infinity, duration: 1.5 }}
         >

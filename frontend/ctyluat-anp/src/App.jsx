@@ -30,6 +30,7 @@ import EditNews from "./pages/Admin/ManagementNews/EditNews";
 import CreateNews from "./pages/Admin/ManagementNews/CreateNews";
 import Services from "./pages/Services/Services";
 import ServiceDetail from "./pages/Services/ServicesDetail";
+import ServicesPost from "./pages/Services/ServicesPost";
 
 const PrivateRoute = ({ element }) => {
   const token = localStorage.getItem("token");
@@ -97,15 +98,14 @@ const AppContent = () => {
           path="/admin/tao-tin-tuc"
           element={<PrivateRoute exact element={<CreateNews />} />}
         />
-        {/* Quản lý hỏi đáp  */}
-        <Route
-          path="/admin/hoi-dap-phap-luat"
-          element={<PrivateRoute exact element={<QuestionManagement />} />}
-        />
         {/* Quản lý dịch vụ  */}
         <Route
-          path="/admin/dich-vu-luat-su"
+          path="/admin/quan-ly-dich-vu-hoi-dap"
           element={<PrivateRoute exact element={<ServicesManagement />} />}
+        />
+         <Route
+          path="/admin/quan-ly-bai-viet"
+          element={<PrivateRoute exact element={<ServicesPost />} />}
         />
       </Routes>
 

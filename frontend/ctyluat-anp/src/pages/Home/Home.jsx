@@ -53,7 +53,7 @@ export default function Home() {
     },
     {
       icon: <img src={DatDai} alt="Dịch vụ" className="w-[90px] h-[90px]" />,
-      title: "TƯ VẤN LUẬT DÂN SỰ",
+      title: "TRANH CHẤP ĐẤT ĐAI",
       description:
         "Nhằm hạn chế tình trạng tranh chấp khi những ý kiến đưa ra giải quyết không đi đến thỏa thuận chung, khó khăn, phức tạp tốn nhiều công sức, tiền bạc gây bất lợi cho người sử dụng đ...",
     },
@@ -112,22 +112,22 @@ export default function Home() {
       {/* About Us */}
       <section className="py-8 bg-white text-center">
         <div className="container mx-auto px-4 md:w-3/4">
-          <h2 className="text-3xl md:text-4xl font-bold text-red-500">
+          <h2 className="text-3xl md:text-5xl font-bold text-red-500">
             VỀ CHÚNG TÔI
           </h2>
           <div className="flex justify-center my-4">
             <img
               src="./src/img/heading-bottom-border.png"
-              className="w-40"
+              className="w-[40%] max-w-sm"
               alt="Heading border"
             />
           </div>
 
           {/* Wrapper chứa cả văn bản và hình ảnh */}
-          <div className="flex flex-col md:flex-row gap-8 items-center">
+          <div className="flex flex-col md:flex-row gap-2 items-center">
             {/* Cột Văn bản */}
             <div className="flex-1 text-left text-gray-700">
-              <p className="font-bold text-lg text-gray-700 leading-loose ">
+              <p className="font-bold text-lg text-gray-700 leading-loose ml-4 mt-10 ">
                 Công ty Luật TNHH ANP được thành lập theo Giấy chứng nhận đăng
                 ký số 01021463/TP/ĐKHĐ cấp năm 2018 của Sở Tư pháp Hà Nội, với
                 sự tâm huyết của những Luật sư có kinh nghiệm hành nghề, nguyên
@@ -156,7 +156,7 @@ export default function Home() {
                 <br />
                 Email: congtyluatanp.hcm@gmail.com
               </p>
-              <button className="mt-6 px-6 py-3 bg-blue-500 text-white font-bold rounded-lg shadow-md hover:bg-orange-500 transition duration-700">
+              <button className="ml-4 mt-6 px-6 py-3 bg-blue-500 text-white font-bold rounded-lg shadow-md hover:bg-orange-500 transition duration-700">
                 Tìm hiểu thêm
               </button>
             </div>
@@ -175,31 +175,38 @@ export default function Home() {
       {/* Law Services */}
       <section className="py-12 bg-gray-100 text-center">
         <div className="container mx-auto px-4 md:w-3/4">
-          <h2 className="text-3xl md:text-4xl font-bold text-red-500">
+          <h2 className="text-3xl md:text-5xl font-bold text-red-500">
             DỊCH VỤ LUẬT SƯ
           </h2>
-          <div className="flex justify-center mb-10">
+          <div className="flex justify-center mb-10 my-4">
             <img
               src="./src/img/heading-bottom-border.png"
-              className="w-120"
+              className="w-[40%] max-w-sm"
               alt="Heading border"
             />
           </div>
-
           {/* Service Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-6">
+          <div ref={ref} className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-6">
             {services.map((service, index) => (
-              <div
+              <motion.div
                 key={index}
-                className="bg-white rounded-lg shadow-lg p-6 text-center hover:shadow-2xl transition-all"
+                initial={{ opacity: 0, y: 50 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.8, delay: index * 0.2 }}
+                className="bg-white shadow-lg p-6 text-center hover:shadow-2xl transition-all transform hover:-translate-y-2 duration-300 
+                 flex flex-col justify-between items-center w-full h-[400px] rounded-xl border border-gray-200"
               >
-                <div className="flex justify-center mb-4">{service.icon}</div>
-                <h3 className="text-xl font-bold mb-2">{service.title}</h3>
-                <p className="text-gray-600 mb-4">{service.description}</p>
-                <button className="px-6 py-3 bg-blue-500 text-white font-bold rounded-lg hover:bg-orange-500 transition">
-                  Chi tiết
+                <div className="flex justify-center mb-4 h-16 mt-4">
+                  {service.icon}
+                </div>
+                <h3 className="text-2xl font-bold">{service.title}</h3>
+                <p className="text-gray-600 text-lg mb-2 line-clamp-3 ">
+                  {service.description}
+                </p>
+                <button className="px-10 py-3 bg-blue-500 text-white font-bold rounded-lg transition-colors ease-in-out hover:bg-orange-500 duration-700">
+                  CHI TIẾT
                 </button>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -221,12 +228,12 @@ export default function Home() {
               initial={{ opacity: 0, x: -100 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 1, ease: "easeOut" }}
-              className="text-white text-center md:text-left md:w-1/2"
+              className="text-white text-center md:text-left md:w-1/3"
             >
-              <h2 className="text-3xl md:text-[40px] font-bold">
+              <h2 className="text-3xl md:text-[45px] font-bold">
                 CHÚNG TÔI Ở ĐÂY
               </h2>
-              <p className="text-lg md:text-xl font-normal mt-6 mb-6 leading-relaxed">
+              <p className="text-lg md:text-lg font-normal mt-12 mb-6 leading-relaxed">
                 Để giải đáp mọi vướng mắc về pháp luật cho bạn. <br />
                 Quyền lợi của bạn là ưu tiên hàng đầu của chúng tôi. <br />
                 Hãy gửi yêu cầu nếu bạn cần luật sư giải quyết vấn đề pháp lý
@@ -238,7 +245,7 @@ export default function Home() {
             </motion.div>
 
             {/* Cột thống kê */}
-            <div className="w-full md:w-1/2 flex justify-center">
+            <div className="w-full md:w-2/3 flex justify-center">
               <Statistics />
             </div>
           </div>
@@ -249,39 +256,39 @@ export default function Home() {
       <MissionStatement />
       {/*News   */}
       <News />
-      {/*FQA */}
       {/* FAQ Section */}
       <section className="py-8 bg-white text-center mb-10">
         <div className="container mx-auto w-[90%] md:w-[70%]">
           <div className="relative flex flex-col md:flex-row items-stretch justify-between gap-6 md:gap-10">
-            {/* Cột Hình ảnh */}
-            <div className="flex-1 flex justify-center">
+            {/* Cột Hình ảnh - Luôn Cố Định */}
+            <div className="flex-1 flex justify-center sticky top-20 h-fit">
               <img
                 src="./src/img/about.jpg"
                 alt="About Us"
-                className="w-full max-w-xs md:max-w-sm rounded-lg shadow-lg object-cover"
+                className="w-full max-w-xs md:max-w-xl shadow-lg object-cover"
               />
             </div>
             {/* Cột Văn bản */}
             <div className="flex-1 text-left max-w-2xl">
-              <h2 className="text-red-500 font-bold text-xl md:text-2xl">
+              <h2 className="text-red-500 font-bold text-xl md:text-3xl">
                 FQA
               </h2>
-              <p className="font-bold text-lg text-gray-700 mb-4">
+              <p className="font-bold text-lg text-gray-700 mb-4 mt-4 md:text-2xl">
                 CÁC VẤN ĐỀ THƯỜNG HAY GẶP PHẢI
               </p>
               <div className="space-y-3">
                 {faqs.map((faq, index) => (
-                  <div key={index} className="border p-3 bg-white shadow-md">
+                  <div
+                    key={index}
+                    className="border border-gray-100 p-3 bg-white shadow-md"
+                  >
                     <div
                       className={`flex items-center justify-between cursor-pointer p-2 transition-all duration-300 
-                    ${openIndex === index ? "text-blue-500" : "text-gray-800"} 
-                    hover:text-blue-500`}
+                ${openIndex === index ? "text-blue-500" : "text-gray-800"} 
+                hover:text-blue-500`}
                       onClick={() => toggleFAQ(index)}
                     >
-                      <span className="font-bold text-lg md:text-xl">
-                        {faq.question}
-                      </span>
+                      <span className="text-lg md:text-lg">{faq.question}</span>
                       {openIndex === index ? (
                         <FaChevronDown />
                       ) : (
@@ -306,6 +313,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+
       {/*Footer */}
       <Footer />
       {/*Coopy right */}

@@ -46,13 +46,13 @@ const News = () => {
 
   return (
     <>
-      <h2 className="text-[45px] font-bold text-red-500 text-center">
+      <h2 className="mt-10 text-5xl font-bold text-red-500 text-center">
         TIN TỨC
       </h2>
-      <div className="flex justify-center mb-10">
+      <div className="flex justify-center mb-10 my-4">
         <img
           src="./src/img/heading-bottom-border.png"
-          className="w-[40%] max-w-xs"
+          className="w-[40%] max-w-sm"
           alt="Heading border"
         />
       </div>
@@ -66,11 +66,11 @@ const News = () => {
                 className="bg-white rounded-lg shadow-lg p-8 relative flex flex-col h-full"
               >
                 <Link to={`/danhmuc/tin-tuc/${news.slug}`}>
-                <img
-                  src={news.image}
-                  alt={news.title}
-                  className="w-full h-[300px] object-cover rounded-lg mb-4"
-                />
+                  <img
+                    src={news.image}
+                    alt={news.title}
+                    className="w-full h-[300px] object-cover rounded-lg mb-4 transition-transform duration-300 hover:scale-105"
+                  />
                 </Link>
                 <h3 className="text-xl font-bold mb-3 line-clamp-1">
                   {news.title}

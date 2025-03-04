@@ -19,17 +19,21 @@ const Services = () => {
       try {
         setLoading(true);
         const response = await axios.get(`http://localhost:8000/posts/${serviceSlug}`);
+  
         setService(response.data.service);
-        setPosts(response.data.posts);
+        setPosts(response.data.posts || []); // Nếu không có bài viết, đặt posts là mảng rỗng
       } catch (error) {
         console.error("Lỗi khi tải bài viết:", error);
+        setService(null);
+        setPosts([]); // Nếu lỗi API, đặt posts thành mảng rỗng
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchPosts();
   }, [serviceSlug]);
+  
 
   const totalPages = Math.ceil(posts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;

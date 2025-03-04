@@ -2,7 +2,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
-import { FaQuoteLeft, FaQuoteRight } from "react-icons/fa";
+import { FaAngleLeft, FaAngleRight, FaQuoteLeft, FaQuoteRight } from "react-icons/fa";
 import TonChi from "../img/luatanp.jpg";
 
 const testimonials = [
@@ -23,13 +23,13 @@ const testimonials = [
 const MissionStatement = () => {
   return (
     <div className="py-12 bg-gray-100">
-      <h2 className="text-[45px] font-bold text-red-500 text-center">
+      <h2 className="text-5xl font-bold text-red-500 text-center">
         TÔN CHỈ HOẠT ĐỘNG
       </h2>
-      <div className="flex justify-center mb-10">
+      <div className="flex justify-center mb-10 my-4">
         <img
           src="./src/img/heading-bottom-border.png"
-          className="w-[40%] max-w-xs"
+          className="w-[40%] max-w-sm"
           alt="Heading border"
         />
       </div>
@@ -73,10 +73,10 @@ const MissionStatement = () => {
           ))}
         </Swiper>
         <button className="absolute left-0 top-1/2 transform -translate-y-1/2 w-14 h-14 flex items-center justify-center bg-blue-500 text-white text-2xl font-bold shadow-lg transition-all duration-500 ease-in-out hover:bg-orange-500 hover:scale-110 z-10">
-          &lt;
+         <FaAngleLeft/>
         </button>
         <button className="absolute right-0 top-1/2 transform -translate-y-1/2 w-14 h-14 flex items-center justify-center bg-blue-500 text-white text-2xl font-bold shadow-lg transition-all duration-500 ease-in-out hover:bg-orange-500 hover:scale-110 z-10">
-          &gt;
+          <FaAngleRight/>
         </button>
       </div>
     </div>

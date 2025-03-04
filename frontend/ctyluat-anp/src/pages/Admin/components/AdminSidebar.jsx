@@ -47,14 +47,15 @@ const AdminSidebar = ({ admin }) => {
               📰 Quản lý tin tức
             </Link>
           </li>
+         
           <li>
-            <Link to="/admin/hoi-dap-phap-luat" className="block p-3 hover:bg-gray-700 rounded">
-              ⚖️ Quản lý hỏi đáp pháp luật
+            <Link to="/admin/quan-ly-dich-vu-hoi-dap" className="block p-3 hover:bg-gray-700 rounded">
+              👨‍⚖️ Quản lý dịch vụ luật sư và hỏi đáp
             </Link>
           </li>
           <li>
-            <Link to="/admin/dich-vu-luat-su" className="block p-3 hover:bg-gray-700 rounded">
-              👨‍⚖️ Quản lý dịch vụ luật sư
+            <Link to="/admin/quan-ly-bai-viet" className="block p-3 hover:bg-gray-700 rounded">
+              👨‍⚖️ Quản lý bài viết
             </Link>
           </li>
         </ul>
