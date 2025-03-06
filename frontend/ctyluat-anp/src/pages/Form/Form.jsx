@@ -75,6 +75,13 @@ const Form = () => {
       </div>
 
       <Footer />
+      {/*Coopy right */}
+      <div className="bg-blue-950 w-full">
+        <div className="container mx-auto text-white w-[70%] border-t border-white pt-4 flex justify-between text-lg py-4">
+          <span>Copyright © 2021 congtyluatanp.com . All rights reserved.</span>
+          <span>Design by DUDI SoftWare</span>
+        </div>
+      </div>
     </div>
   );
 };

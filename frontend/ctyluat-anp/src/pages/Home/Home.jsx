@@ -14,7 +14,7 @@ import MissionStatement from "../../components/MissionStatement";
 import News from "../../components/News";
 import { useState } from "react";
 import Footer from "../../components/Footer";
-
+import { useNavigate } from "react-router-dom";
 export default function Home() {
   const services = [
     {
@@ -62,6 +62,7 @@ export default function Home() {
     triggerOnce: false, // Chạy lại mỗi khi xuất hiện
     threshold: 0.2, // Kích hoạt khi 20% phần tử hiển thị trên màn hình
   });
+  const navigate = useNavigate();
 
   //FQA
   const [openIndex, setOpenIndex] = useState(null);
@@ -156,9 +157,12 @@ export default function Home() {
                 <br />
                 Email: congtyluatanp.hcm@gmail.com
               </p>
-              <button className="ml-4 mt-6 px-6 py-3 bg-blue-500 text-white font-bold rounded-lg shadow-md hover:bg-orange-500 transition duration-700">
-                Tìm hiểu thêm
-              </button>
+              <button
+      className="ml-4 mt-6 px-6 py-3 bg-blue-500 text-white font-bold rounded-lg shadow-md hover:bg-orange-500 transition duration-700"
+      onClick={() => navigate("/danhmuc/ve-chung-toi")}
+    >
+      Tìm hiểu thêm
+    </button>
             </div>
 
             {/* Cột Hình ảnh */}

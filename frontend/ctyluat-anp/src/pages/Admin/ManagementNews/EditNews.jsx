@@ -16,7 +16,7 @@ const EditNews = () => {
 
     fetch(`http://localhost:8000/news/${slug}`)
       .then((res) => {
-        if (!res.ok) throw new Error("❌ Không tìm thấy bài viết!");
+        if (!res.ok) throw new Error(" Không tìm thấy bài viết!");
         return res.json();
       })
       .then((data) => setNews(data))
@@ -33,13 +33,13 @@ const EditNews = () => {
       });
 
       if (res.ok) {
-        alert("✅ Tin tức đã được cập nhật!");
+        alert(" Tin tức đã được cập nhật!");
         navigate("/admin/quan-ly-tin-tuc");
       } else {
-        alert("❌ Lỗi khi cập nhật!");
+        alert(" Lỗi khi cập nhật!");
       }
     } catch (error) {
-      console.error("❌ Lỗi:", error);
+      console.error(" Lỗi:", error);
     }
   };
 

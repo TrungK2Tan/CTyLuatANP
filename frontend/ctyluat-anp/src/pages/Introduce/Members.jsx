@@ -47,7 +47,6 @@ const Members = () => {
                 alt={member.name}
                 className="w-full h-100 object-cover"
               />
-
               {/* Thông tin luật sư (Luôn hiển thị, đổi màu khi hover) */}
               <div className="p-4 text-center transition-colors duration-300 bg-white group-hover:bg-blue-600">
                 <h3 className="text-lg font-semibold text-gray-800 group-hover:text-white">
@@ -84,6 +83,13 @@ const Members = () => {
         </div>
       </div>
       <Footer />
+      {/*Coopy right */}
+      <div className="bg-blue-950 w-full">
+        <div className="container mx-auto text-white w-[70%] border-t border-white pt-4 flex justify-between text-lg py-4">
+          <span>Copyright © 2021 congtyluatanp.com . All rights reserved.</span>
+          <span>Design by DUDI SoftWare</span>
+        </div>
+      </div>
     </div>
   );
 };
