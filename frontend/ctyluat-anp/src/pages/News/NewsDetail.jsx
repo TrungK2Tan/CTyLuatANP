@@ -209,19 +209,29 @@ const NewsDetail = () => {
             </h2>
             <ul className="list-none space-y-3">
               {[
-                "Luật Dân Sự",
-                "Luật Hình Sự",
-                "Luật Hôn Nhân Gia Đình",
-                "Tranh Chấp Đất Đai",
-                "Kinh Doanh Thương Mại",
-                "Tư Vấn Thừa Kế",
+                { title: "Luật Dân Sự", slug: "luat-dan-su" },
+                { title: "Luật Hình Sự", slug: "luat-hinh-su" },
+                {
+                  title: "Luật Hôn Nhân Gia Đình",
+                  slug: "luat-hon-nhan-gia-dinh",
+                },
+                { title: "Tranh Chấp Đất Đai", slug: "tranh-chap-dat-dai" },
+                {
+                  title: "Kinh Doanh Thương Mại",
+                  slug: "kinh-doanh-thuong-mai",
+                },
+                { title: "Tư Vấn Thừa Kế", slug: "tu-van-thua-ke" },
               ].map((item, index) => (
-                <li
-                  key={index}
-                  className="flex items-center p-2 rounded-lg border border-gray-200 transition-all duration-300 hover:bg-blue-100 cursor-pointer"
-                >
-                  <FaChevronRight className="mr-2 text-blue-500" />
-                  <span className="text-gray-700 font-medium">{item}</span>
+                <li key={index}>
+                  <Link
+                    to={`/danh-muc/dich-vu-luat-su/${item.slug}`}
+                    className="flex items-center p-2 rounded-lg border border-gray-200 transition-all duration-300 hover:bg-blue-100 cursor-pointer"
+                  >
+                    <FaChevronRight className="mr-2 text-blue-500" />
+                    <span className="text-gray-700 font-medium">
+                      {item.title}
+                    </span>
+                  </Link>
                 </li>
               ))}
             </ul>

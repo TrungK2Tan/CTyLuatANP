@@ -16,46 +16,58 @@ import { useState } from "react";
 import Footer from "../../components/Footer";
 import { useNavigate } from "react-router-dom";
 export default function Home() {
+  const toSlug = (title) => {
+    return title
+      .toLowerCase()
+      .normalize("NFD") // Loại bỏ dấu tiếng Việt
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/đ/g, "d") // Thay thế ký tự đ
+      .replace(/[^a-z0-9\s]/g, "") // Loại bỏ ký tự đặc biệt
+      .replace(/\s+/g, "-") // Thay thế khoảng trắng bằng dấu "-"
+      .trim();
+  };
   const services = [
     {
       icon: <img src={HonNhan} alt="Dịch vụ" className="w-[90px] h-[90px]" />,
       title: "HÔN NHÂN GIA ĐÌNH",
+      url: `/${toSlug("HÔN NHÂN GIA ĐÌNH")}`,
       description:
         "Công ty Luật TNHH ANP tư vấn, cung cấp dịch vụ pháp lý, giải quyết thủ tục về Luật Hôn nhân gia đình như Ly hôn, Kết hôn, Tranh chấp quyền nuôi con, Chia tài sản khi ly h...",
     },
     {
       icon: <img src={KeToan} alt="Dịch vụ" className="w-[90px] h-[90px]" />,
       title: "KINH DOANH THƯƠNG MẠI",
+      url: `/${toSlug("KINH DOANH THƯƠNG MẠI")}`,
       description:
         "Hợp đồng nếu không được soạn kỹ có thể gặp nhiều rủi ro: chủ thể hợp đồng, đối tượng giao dịch, điều khoản đôi bên, trách nhiệm và nghĩa vụ, thủ tục pháp lý...",
     },
     {
-      icon: (
-        <img src={DoanhNghiep} alt="Dịch vụ" className="w-[90px] h-[90px]" />
-      ),
+      icon: <img src={DoanhNghiep} alt="Dịch vụ" className="w-[90px] h-[90px]" />,
       title: "TƯ VẤN LUẬT DÂN SỰ",
+      url: `/${toSlug("TƯ VẤN LUẬT DÂN SỰ")}`,
       description:
         "Công ty luật ANP cung cấp dịch vụ tư vấn luật dân sự bao gồm: tranh chấp đất đai, hôn nhân gia đình, tranh chấp hợp đồng, thừa kế tài sản...",
     },
     {
       icon: <img src={HinhSu} alt="Dịch vụ" className="w-[90px] h-[90px]" />,
       title: "TƯ VẤN LUẬT HÌNH SỰ",
+      url: `/${toSlug("TƯ VẤN LUẬT HÌNH SỰ")}`,
       description:
-        "Với đội ngũ luật sư chuyên gia có nhiều năm kinh nghiệm trong ngành luật và văn phòng tại Hà Nội và TP. Hồ Chí Minh, chúng tôi cam kết mang đến dịch vụ pháp lý toàn diện nhất cho k...",
+        "Với đội ngũ luật sư chuyên gia có nhiều năm kinh nghiệm trong ngành luật và văn phòng tại Hà Nội và TP. Hồ Chí Minh, chúng tôi cam kết mang đến dịch vụ pháp lý toàn diện nhất...",
     },
     {
-      icon: (
-        <img src={LuatSuDanSu} alt="Dịch vụ" className="w-[90px] h-[90px]" />
-      ),
+      icon: <img src={LuatSuDanSu} alt="Dịch vụ" className="w-[90px] h-[90px]" />,
       title: "TƯ VẤN THỪA KẾ",
+      url: `/${toSlug("TƯ VẤN THỪA KẾ")}`,
       description:
-        "Với kinh nghiệm hơn 15 năm trong ngành Luật, đã từng hỗ trợ - tư vấn pháp luật thừa kế, giải quyết tranh chấp thừa kế cho hàng ngàn khách hàng. Công ty Luật TNHH ANP cung cấp các d...",
+        "Với kinh nghiệm hơn 15 năm trong ngành Luật, đã từng hỗ trợ - tư vấn pháp luật thừa kế, giải quyết tranh chấp thừa kế cho hàng ngàn khách hàng. Công ty Luật TNHH ANP cung cấp...",
     },
     {
       icon: <img src={DatDai} alt="Dịch vụ" className="w-[90px] h-[90px]" />,
       title: "TRANH CHẤP ĐẤT ĐAI",
+      url: `/${toSlug("TRANH CHẤP ĐẤT ĐAI")}`,
       description:
-        "Nhằm hạn chế tình trạng tranh chấp khi những ý kiến đưa ra giải quyết không đi đến thỏa thuận chung, khó khăn, phức tạp tốn nhiều công sức, tiền bạc gây bất lợi cho người sử dụng đ...",
+        "Nhằm hạn chế tình trạng tranh chấp khi những ý kiến đưa ra giải quyết không đi đến thỏa thuận chung, khó khăn, phức tạp tốn nhiều công sức, tiền bạc gây bất lợi cho người sử dụng...",
     },
   ];
   const { ref, inView } = useInView({
@@ -207,9 +219,13 @@ export default function Home() {
                 <p className="text-gray-600 text-lg mb-2 line-clamp-3 ">
                   {service.description}
                 </p>
-                <button className="px-10 py-3 bg-blue-500 text-white font-bold rounded-lg transition-colors ease-in-out hover:bg-orange-500 duration-700">
-                  CHI TIẾT
-                </button>
+                <button
+            className="px-10 py-3 bg-blue-500 text-white font-bold rounded-lg transition-colors ease-in-out hover:bg-orange-500 duration-700"
+            onClick={() => (window.location.href = service.url)}
+            // Điều hướng trang
+          >
+            CHI TIẾT
+          </button>
               </motion.div>
             ))}
           </div>
@@ -243,7 +259,7 @@ export default function Home() {
                 Hãy gửi yêu cầu nếu bạn cần luật sư giải quyết vấn đề pháp lý
                 của mình.
               </p>
-              <button className="py-2 px-6 bg-blue-500 text-white text-lg font-bold shadow-lg transition-all duration-700 ease-in-out hover:bg-orange-500 hover:translate-y-1">
+              <button  onClick={() => navigate("/danhmuc/lien-he")} className="py-2 px-6 bg-blue-500 text-white text-lg font-bold shadow-lg transition-all duration-700 ease-in-out hover:bg-orange-500 hover:translate-y-1">
                 Gửi yêu cầu
               </button>
             </motion.div>

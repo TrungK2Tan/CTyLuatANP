@@ -1,36 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { FaChevronRight, FaSearch } from "react-icons/fa";
 import image1 from "../../img/about.jpg";
+import { Link, useParams } from "react-router-dom";
+import axios from "axios";
 const Company = () => {
-  const posts = [
-    {
-      title:
-        'Việc Quy Định Về Biện Pháp "Tạm Hoãn Xuất Cảnh" Là Không Cần Thiết, Việc Quy Định Về Biện Pháp "Tạm Hoãn Xuất Cảnh" Là Không Cần Thiết',
-      image: image1,
-    },
-    {
-      title:
-        'Việc Phân Loại Tội Phạm Khi Giữ Người Trong Trường Hợp Khẩn Cấp, Việc Quy Định Về Biện Pháp "Tạm Hoãn Xuất Cảnh" Là Không Cần Thiết',
-      image: image1,
-    },
-    {
-      title:
-        'Quyền Và Nghĩa Vụ Của Người Đại Diện Của Bị Can, Bị Cáo, Bị Hại...,Việc Quy Định Về Biện Pháp "Tạm Hoãn Xuất Cảnh" Là Không Cần Thiết',
-      image: image1,
-    },
-    {
-      title:
-        'Quyền Và Nghĩa Vụ Của Người Đại Diện Của Bị Can, Bị Cáo, Bị Hại...,Việc Quy Định Về Biện Pháp "Tạm Hoãn Xuất Cảnh" Là Không Cần Thiết',
-      image: image1,
-    },
-    {
-      title:
-        'Quyền Và Nghĩa Vụ Của Người Đại Diện Của Bị Can, Bị Cáo, Bị Hại...,Việc Quy Định Về Biện Pháp "Tạm Hoãn Xuất Cảnh" Là Không Cần Thiết',
-      image: image1,
-    },
-  ];
+  const { slug } = useParams();
+  const [latestNews, setLatestNews] = useState([]);
+  useEffect(() => {
+    const fetchNewsList = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/news");
+        const allNews = response.data;
+        // Lấy 3 bài viết mới nhất
+        setLatestNews(allNews.slice(-5));
+      } catch (error) {
+        console.error("Lỗi khi lấy danh sách bài viết:", error);
+      }
+    };
+    fetchNewsList();
+  }, [slug]);
   return (
     <div className="relative w-full min-h-screen flex flex-col">
       <Header />
@@ -54,7 +44,7 @@ const Company = () => {
       <div className="container mx-auto w-[90%] md:w-[70%] py-10 flex flex-col md:flex-row gap-10">
         {/* Cột nội dung chính - 40% */}
         <div className="w-full md:w-[65%]">
-        <h1 className="text-3xl font-bold mb-6 text-blue-900">
+          <h1 className="text-3xl font-bold mb-6 text-blue-900">
             CÔNG TY LUẬT TNHH ANP
           </h1>
 
@@ -123,17 +113,17 @@ const Company = () => {
             * GIÁ TRỊ CỐT LÕI CỦA CÔNG TY LUẬT ANP
           </h2>
           <p className="text-lg text-gray-700 mt-2">
-  Suốt những năm hoạt động và phụng sự cho khách hàng, công ty Luật
-  ANP luôn đặt ra sứ mệnh và thực hiện theo đúng Giá trị cốt lõi mà
-  công ty đã xây dựng{" "}
-  <strong className="text-red-500">"TÂM – TẦM – TÀI – TÍN"</strong> để
-  dẫn lối cho những hành động của đội ngũ luật sư ANP...
-</p>
+            Suốt những năm hoạt động và phụng sự cho khách hàng, công ty Luật
+            ANP luôn đặt ra sứ mệnh và thực hiện theo đúng Giá trị cốt lõi mà
+            công ty đã xây dựng{" "}
+            <strong className="text-red-500">"TÂM – TẦM – TÀI – TÍN"</strong> để
+            dẫn lối cho những hành động của đội ngũ luật sư ANP...
+          </p>
 
-<div className="text-lg text-gray-700 mt-2">
-  <strong className="text-red-500">TÂM:</strong> Làm việc bằng tinh
-  thần trách nhiệm...
-</div>
+          <div className="text-lg text-gray-700 mt-2">
+            <strong className="text-red-500">TÂM:</strong> Làm việc bằng tinh
+            thần trách nhiệm...
+          </div>
 
           <p className="text-xl font-bold">---</p>
           <strong className="text-xl">CÔNG TY LUẬT TNHH ANP:</strong>
@@ -153,66 +143,86 @@ const Company = () => {
           </p>
         </div>
 
-        {/* Cột nội dung phụ - 40% */}
+        {/* Cột phụ */}
         <div className="w-full md:w-[25%] flex flex-col gap-6">
-          {/* Ô tìm kiếm và dịch vụ luật sư */}
-          <div className=" p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4 border-b border-gray-300 pb-2 relative after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-16 after:h-[3px] after:bg-blue-500">
+          {/* Ô tìm kiếm */}
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4 border-b pb-2 text-center md:text-left">
               TÌM KIẾM
             </h2>
             <form className="relative">
               <input
                 type="text"
                 placeholder="Nhập từ khóa..."
-               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
               />
               <button
                 type="submit"
-                className="absolute right-4 top-3 text-gray-500"
+                className="absolute right-4 top-2.5 text-gray-500 hover:text-blue-500"
               >
-                <FaSearch className="text-blue-500" />
+                <FaSearch className="text-lg" />
               </button>
             </form>
+          </div>
 
-            <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-3 border-b border-gray-300 pb-2 relative after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-16 after:h-[3px] after:bg-blue-500">
+          {/* Dịch vụ luật sư */}
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4 border-b pb-2 text-center md:text-left">
               DỊCH VỤ LUẬT SƯ
             </h2>
-
-            <ul className="list-none text-lg text-gray-400 space-y-2 ">
-              <li className="flex items-center border-b border-gray-300 pb-2">
-                <FaChevronRight className="mr-2 " /> Luật Dân Sự
-              </li>
-              <li className="flex items-center border-b border-gray-300 pb-2">
-                <FaChevronRight className="mr-2 " /> Luật Hình Sự
-              </li>
-              <li className="flex items-center border-b border-gray-300 pb-2">
-                <FaChevronRight className="mr-2 " /> Luật Hôn Nhân Gia Đình
-              </li>
-              <li className="flex items-center border-b border-gray-300 pb-2">
-                <FaChevronRight className="mr-2 " /> Tranh Chấp Đất Đai
-              </li>
-              <li className="flex items-center border-b border-gray-300 pb-2">
-                <FaChevronRight className="mr-2 " /> Kinh Doanh Thương Mại
-              </li>
-              <li className="flex items-center border-b border-gray-300 pb-2">
-                <FaChevronRight className="mr-2 " /> Tư Vấn Thừa Kế
-              </li>
+            <ul className="list-none space-y-3">
+              {[
+                { title: "Luật Dân Sự", slug: "luat-dan-su" },
+                { title: "Luật Hình Sự", slug: "luat-hinh-su" },
+                {
+                  title: "Luật Hôn Nhân Gia Đình",
+                  slug: "luat-hon-nhan-gia-dinh",
+                },
+                { title: "Tranh Chấp Đất Đai", slug: "tranh-chap-dat-dai" },
+                {
+                  title: "Kinh Doanh Thương Mại",
+                  slug: "kinh-doanh-thuong-mai",
+                },
+                { title: "Tư Vấn Thừa Kế", slug: "tu-van-thua-ke" },
+              ].map((item, index) => (
+                <li key={index}>
+                  <Link
+                    to={`/danh-muc/dich-vu-luat-su/${item.slug}`}
+                    className="flex items-center p-2 rounded-lg border border-gray-200 transition-all duration-300 hover:bg-blue-100 cursor-pointer"
+                  >
+                    <FaChevronRight className="mr-2 text-blue-500" />
+                    <span className="text-gray-700 font-medium">
+                      {item.title}
+                    </span>
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Ô bài viết mới nhất */}
-          <div className="bg-gray-100 p-6 rounded-lg shadow-md flex flex-col">
-            {/* Tiêu đề */}
-            <h2 className="text-xl font-semibold text-gray-800 mb-4 border-b border-gray-300 pb-2 relative after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-16 after:h-[3px] after:bg-blue-500">
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4 border-b pb-2">
               BÀI VIẾT MỚI NHẤT
             </h2>
-
-            {/* Danh sách bài viết */}
             <div className="space-y-4">
-              {posts.map((post, index) => (
-                <div key={index} className="flex items-start space-x-3 mt-5">
-                   <img src={post.image} alt="Bài viết" className="w-20 h-20 object-cover rounded" />
-                   <p className="text-gray-700 text-sm">{post.title}</p>
+              {latestNews.map((post) => (
+                <div key={post._id} className="flex items-start space-x-3">
+                  <Link
+                    to={`/danhmuc/tin-tuc/${post.slug}`}
+                    className="shrink-0"
+                  >
+                    <img
+                      src={post.image}
+                      alt={post.title}
+                      className="w-16 h-16 object-cover rounded-lg shadow-md"
+                    />
+                  </Link>
+                  <p className="text-gray-700 text-sm hover:text-blue-500 cursor-pointer line-clamp-2 w-[calc(100%-4.5rem)]">
+                    <Link to={`/danhmuc/tin-tuc/${post.slug}`}>
+                      {post.title}
+                    </Link>
+                  </p>
                 </div>
               ))}
             </div>

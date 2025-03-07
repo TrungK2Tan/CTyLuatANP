@@ -20,7 +20,16 @@ mongoose.connect(config.connectionString);
 const app = express();
 app.use(express.json());
 app.use(cors({ origin: "*" }));
-
+const toSlug = (title) => {
+  return title
+    .toLowerCase()
+    .normalize("NFD") // Loại bỏ dấu tiếng Việt
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d") // Thay thế ký tự đ
+    .replace(/[^a-z0-9\s]/g, "") // Loại bỏ ký tự đặc biệt
+    .replace(/\s+/g, "-") // Thay thế khoảng trắng bằng dấu "-"
+    .trim();
+};
 // Create account
 app.post("/create-account", async (req, res) => {
   const { fullName, email, password, phone, dob, gender } = req.body;
@@ -161,7 +170,8 @@ app.post("/forms", async (req, res) => {
   }
 
   try {
-    const slug = slugify(title, { lower: true, strict: true });
+    const slug = toSlug(title); // Dùng hàm toSlug để tạo slug chuẩn
+
 
     const newForm = new Form({
       title,
@@ -197,7 +207,8 @@ app.put(
       }
       let newSlug = form.slug;
       if (title && title !== form.title) {
-        newSlug = slugify(title, { lower: true, strict: true });
+        newSlug = toSlug(title); // Dùng hàm toSlug để tạo slug chuẩn
+
       }
       const image = req.files["image"]
         ? `http://localhost:8000/uploads/${req.files["image"][0].filename}`
@@ -271,7 +282,7 @@ app.post("/news", async (req, res) => {
   }
 
   try {
-    const slug = slugify(title, { lower: true, strict: true });
+    const slug = toSlug(title); // Dùng hàm toSlug để tạo slug chuẩn
 
     const newNews = new News({
       title,
@@ -286,10 +297,11 @@ app.post("/news", async (req, res) => {
       .status(201)
       .json({ message: "Thêm bài viết thành công", news: newNews });
   } catch (error) {
-    console.error(" Lỗi khi tạo bài viết:", error);
+    console.error("Lỗi khi tạo bài viết:", error);
     res.status(500).json({ error: "Lỗi server", details: error.message });
   }
 });
+
 //  API Lấy danh sách bài viết News
 app.get("/news", async (req, res) => {
   try {
@@ -324,7 +336,7 @@ app.put("/news/:slug", async (req, res) => {
 
     let newSlug = news.slug;
     if (title && title !== news.title) {
-      newSlug = slugify(title, { lower: true, strict: true });
+       newSlug = toSlug(title);
     }
 
     news = await News.findOneAndUpdate(
@@ -362,7 +374,7 @@ app.post("/categories", async (req, res) => {
   }
 
   try {
-    const slug = slugify(name, { lower: true, strict: true });
+    const slug = toSlug(title);
     const newCategory = new CategoryServices({ name, slug, services });
     await newCategory.save();
     res
@@ -486,7 +498,7 @@ app.post("/posts", upload.single("image"), async (req, res) => {
     }
 
     const category_id = category._id;
-    const slug = slugify(title, { lower: true, strict: true });
+    const slug = toSlug(title);
 
     // 🔹 Kiểm tra bài viết trùng tiêu đề
     const existingPost = await PostServices.findOne({ slug });
@@ -530,7 +542,7 @@ app.put("/posts/:slug", upload.single("image"), async (req, res) => {
 
     let newSlug = post.slug;
     if (title && title !== post.title) {
-      newSlug = slugify(title, { lower: true, strict: true });
+      newSlug = toSlug(title);
     }
 
     const image = req.file
@@ -565,7 +577,7 @@ app.post("/categories/:categoryId/services", async (req, res) => {
   try {
     const { categoryId } = req.params;
     const { name } = req.body;
-    const slug = slugify(name, { lower: true, strict: true });
+    const slug = toSlug(name);
 
     const category = await CategoryServices.findById(categoryId);
     if (!category) {
@@ -597,7 +609,7 @@ app.put("/categories/:categoryId/services/:serviceSlug", async (req, res) => {
     }
 
     service.name = name;
-    service.slug = slugify(name, { lower: true, strict: true });
+    service.slug = toSlug(name)
     await category.save();
     res.json({ message: "Cập nhật dịch vụ thành công", category });
   } catch (error) {
