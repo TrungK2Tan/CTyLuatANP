@@ -1,5 +1,4 @@
 require("dotenv").config();
-const config = require("./config.json");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const express = require("express");
@@ -14,8 +13,21 @@ const User = require("./models/user.model");
 const Form = require("./models/form.model");
 const News = require("./models/news.model");
 const { authenticateToken } = require("./utilities");
+require("dotenv").config();
+const cloudinary = require("cloudinary").v2;
+const { sendContactEmail } = require("./sendmail");
+// ✅ Sử dụng biến môi trường thay vì config.json
+const mongoURI = process.env.MONGO_URI;
+if (!mongoURI) {
+  console.error("❌ MONGO_URI is not defined in .env");
+  process.exit(1); // Dừng server nếu không có URI
+}
 
-mongoose.connect(config.connectionString);
+mongoose
+  .connect(mongoURI)
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
+
 
 const app = express();
 app.use(express.json());
@@ -30,6 +42,13 @@ const toSlug = (title) => {
     .replace(/\s+/g, "-") // Thay thế khoảng trắng bằng dấu "-"
     .trim();
 };
+//cau hinh cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+app.post("/api/send-email", sendContactEmail);
 // Create account
 app.post("/create-account", async (req, res) => {
   const { fullName, email, password, phone, dob, gender } = req.body;

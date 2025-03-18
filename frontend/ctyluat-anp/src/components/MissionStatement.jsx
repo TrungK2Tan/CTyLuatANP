@@ -10,13 +10,13 @@ const testimonials = [
     id: 1,
     image: TonChi,
     quote: `Công ty Luật ANP luôn đặt ra sứ mệnh và thực hiện theo đúng Giá trị cốt lõi mà công ty đã xây dựng TÂM – TẦM – TÀI – TÍN để dẫn lối cho hành động của đội ngũ luật sư ANP và những kỳ vọng mà chúng tôi đặt vào bản thân mình cũng như kỳ vọng khách hàng đặt niềm tin tại công ty. Thực hiện đúng kim chỉ nam mà người lãnh đạo công ty luật ANP đã đặt ra`,
-    author: "Luật sư Nguyễn Văn Thân",
+    author: "Luật sư Triệu Thị Linh Huệ",
   },
   {
     id: 2,
     image: TonChi,
     quote: `Công ty Luật ANP luôn đặt ra sứ mệnh và thực hiện theo đúng Giá trị cốt lõi mà công ty đã xây dựng TÂM – TẦM – TÀI – TÍN để dẫn lối cho hành động của đội ngũ luật sư ANP và những kỳ vọng mà chúng tôi đặt vào bản thân mình cũng như kỳ vọng khách hàng đặt niềm tin tại công ty. Thực hiện đúng kim chỉ nam mà người lãnh đạo công ty luật ANP đã đặt ra`,
-    author: "Luật sư Nguyễn Văn Thân",
+    author: "Luật sư Triệu Thị Linh Huệ",
   },
 ];
 

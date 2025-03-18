@@ -1,9 +1,9 @@
 import { FaChevronLeft, FaChevronRight, FaChevronDown } from "react-icons/fa";
 
-import DatDai from "../../img/item/dat-dai.png";
+import DatDai from "../../img/item/icon_tranh_chap_dat_dai.jpg";
 import DoanhNghiep from "../../img/item/doanh-nghiep.png";
-import HinhSu from "../../img/item/hinh-su.png";
-import HonNhan from "../../img/item/hon-nhan.png";
+import HinhSu from "../../img/item/icon-luat-su-hinh-su.png";
+import HonNhan from "../../img/item/icon-hon-nhan-gia-dinh.png";
 import KeToan from "../../img/item/ke-toan.png";
 import LuatSuDanSu from "../../img/item/luat-su-dan-su.png";
 import Header from "../../components/Header";
@@ -43,21 +43,21 @@ export default function Home() {
     },
     {
       icon: <img src={DoanhNghiep} alt="Dịch vụ" className="w-[90px] h-[90px]" />,
-      title: "TƯ VẤN LUẬT DÂN SỰ",
+      title: " LUẬT DÂN SỰ",
       url: `/${toSlug("TƯ VẤN LUẬT DÂN SỰ")}`,
       description:
         "Công ty luật ANP cung cấp dịch vụ tư vấn luật dân sự bao gồm: tranh chấp đất đai, hôn nhân gia đình, tranh chấp hợp đồng, thừa kế tài sản...",
     },
     {
       icon: <img src={HinhSu} alt="Dịch vụ" className="w-[90px] h-[90px]" />,
-      title: "TƯ VẤN LUẬT HÌNH SỰ",
+      title: " LUẬT HÌNH SỰ",
       url: `/${toSlug("TƯ VẤN LUẬT HÌNH SỰ")}`,
       description:
         "Với đội ngũ luật sư chuyên gia có nhiều năm kinh nghiệm trong ngành luật và văn phòng tại Hà Nội và TP. Hồ Chí Minh, chúng tôi cam kết mang đến dịch vụ pháp lý toàn diện nhất...",
     },
     {
       icon: <img src={LuatSuDanSu} alt="Dịch vụ" className="w-[90px] h-[90px]" />,
-      title: "TƯ VẤN THỪA KẾ",
+      title: " THỪA KẾ",
       url: `/${toSlug("TƯ VẤN THỪA KẾ")}`,
       description:
         "Với kinh nghiệm hơn 15 năm trong ngành Luật, đã từng hỗ trợ - tư vấn pháp luật thừa kế, giải quyết tranh chấp thừa kế cho hàng ngàn khách hàng. Công ty Luật TNHH ANP cung cấp...",
@@ -126,7 +126,7 @@ export default function Home() {
       <section className="py-8 bg-white text-center">
         <div className="container mx-auto px-4 md:w-3/4">
           <h2 className="text-3xl md:text-5xl font-bold text-red-500">
-            VỀ CHÚNG TÔI
+            GIỚI THIỆU
           </h2>
           <div className="flex justify-center my-4">
             <img
@@ -150,24 +150,28 @@ export default function Home() {
                 trong lĩnh vực tư vấn pháp luật và dịch vụ luật sư tranh tụng,
                 bào chữa Dân sự, Hình sự, Kinh tế - Thương mại...
                 <br />
-                <br />
                 Công ty Luật ANP lợi thế với 2 văn phòng làm việc thuận tiện hỗ
                 trợ khách hàng:
                 <br />
-                VP Hà Nội: Tầng 5, Tòa N07, Trần Đăng Ninh, Q. Cầu Giấy, TP. Hà
-                Nội
+                <br />
+                Cafe cùng Luật sư: 232 Nguyễn Thị Minh Khai, Phường Võ Thị Sáu,
+                Quận 3, TP.HCM
                 <br />
                 VP Hồ Chí Minh: 232 Nguyễn Thị Minh Khai, Phường Võ Thị Sáu,
                 Quận 3, TP.HCM
                 <br />
+                VP Hà Nội: Tầng 5, Tòa N07, Trần Đăng Ninh, Q. Cầu Giấy, TP. Hà
+                Nội
+                <br />
+               
                 <br />
                 Hotline 24/7:
                 <strong className="text-red-400 font-bold">
                   {" "}
-                  090 360 1234{" "}
+                  0909 229 689{" "}
                 </strong>
                 <br />
-                Email: congtyluatanp.hcm@gmail.com
+                Email: congtyluatanp232hcm@gmail.com
               </p>
               <button
       className="ml-4 mt-6 px-6 py-3 bg-blue-500 text-white font-bold rounded-lg shadow-md hover:bg-orange-500 transition duration-700"
@@ -192,7 +196,7 @@ export default function Home() {
       <section className="py-12 bg-gray-100 text-center">
         <div className="container mx-auto px-4 md:w-3/4">
           <h2 className="text-3xl md:text-5xl font-bold text-red-500">
-            DỊCH VỤ LUẬT SƯ
+            DỊCH VỤ CỦA CHÚNG TÔI
           </h2>
           <div className="flex justify-center mb-10 my-4">
             <img
@@ -231,49 +235,9 @@ export default function Home() {
           </div>
         </div>
       </section>
-      {/* Banner Bottom Responsive */}
-      <div
-        className="relative w-full min-h-[500px] md:min-h-[500px] flex items-center justify-center bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('./src/img/background.jpg')" }}
-      >
-        {/* Lớp phủ màu đen */}
-        <div className="absolute inset-0 bg-black/80"></div>
-
-        {/* Container chính */}
-        <div className="relative z-10 container w-[90%] md:w-[80%] lg:w-[70%] mx-auto px-4">
-          {/* Layout chính */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 min-h-[400px] pb-12">
-            {/* Cột nội dung */}
-            <motion.div
-              initial={{ opacity: 0, x: -100 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1, ease: "easeOut" }}
-              className="text-white text-center md:text-left md:w-1/3"
-            >
-              <h2 className="text-3xl md:text-[45px] font-bold">
-                CHÚNG TÔI Ở ĐÂY
-              </h2>
-              <p className="text-lg md:text-lg font-normal mt-12 mb-6 leading-relaxed">
-                Để giải đáp mọi vướng mắc về pháp luật cho bạn. <br />
-                Quyền lợi của bạn là ưu tiên hàng đầu của chúng tôi. <br />
-                Hãy gửi yêu cầu nếu bạn cần luật sư giải quyết vấn đề pháp lý
-                của mình.
-              </p>
-              <button  onClick={() => navigate("/danhmuc/lien-he")} className="py-2 px-6 bg-blue-500 text-white text-lg font-bold shadow-lg transition-all duration-700 ease-in-out hover:bg-orange-500 hover:translate-y-1">
-                Gửi yêu cầu
-              </button>
-            </motion.div>
-
-            {/* Cột thống kê */}
-            <div className="w-full md:w-2/3 flex justify-center">
-              <Statistics />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/*Activiti  */}
-      <MissionStatement />
+            {/*Activiti  */}
+            <MissionStatement />
+      
       {/*News   */}
       <News />
       {/* FAQ Section */}
@@ -290,10 +254,8 @@ export default function Home() {
             </div>
             {/* Cột Văn bản */}
             <div className="flex-1 text-left max-w-2xl">
-              <h2 className="text-red-500 font-bold text-xl md:text-3xl">
-                FQA
-              </h2>
-              <p className="font-bold text-lg text-gray-700 mb-4 mt-4 md:text-2xl">
+              
+              <p className="text-red-500 font-bold text-lg text-gray-700 mb-4 mt-4 md:text-2xl">
                 CÁC VẤN ĐỀ THƯỜNG HAY GẶP PHẢI
               </p>
               <div className="space-y-3">
@@ -333,7 +295,46 @@ export default function Home() {
           </div>
         </div>
       </section>
+{/* Banner Bottom Responsive */}
+<div
+        className="relative w-full min-h-[500px] md:min-h-[500px] flex items-center justify-center bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('./src/img/background.jpg')" }}
+      >
+        {/* Lớp phủ màu đen */}
+        <div className="absolute inset-0 bg-black/80"></div>
 
+        {/* Container chính */}
+        <div className="relative z-10 container w-[90%] md:w-[80%] lg:w-[70%] mx-auto px-4">
+          {/* Layout chính */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 min-h-[400px] pb-12">
+            {/* Cột nội dung */}
+            <motion.div
+              initial={{ opacity: 0, x: -100 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1, ease: "easeOut" }}
+              className="text-white text-center md:text-left md:w-1/3"
+            >
+              <h2 className="text-3xl md:text-[45px] font-bold">
+                CHÚNG TÔI Ở ĐÂY
+              </h2>
+              <p className="text-lg md:text-lg font-normal mt-12 mb-6 leading-relaxed">
+                Để giải đáp mọi vướng mắc về pháp luật cho bạn. <br />
+                Quyền lợi của bạn là ưu tiên hàng đầu của chúng tôi. <br />
+                Hãy gửi yêu cầu nếu bạn cần luật sư giải quyết vấn đề pháp lý
+                của mình.
+              </p>
+              <button  onClick={() => navigate("/danhmuc/lien-he")} className="py-2 px-6 bg-blue-500 text-white text-lg font-bold shadow-lg transition-all duration-700 ease-in-out hover:bg-orange-500 hover:translate-y-1">
+                Gửi yêu cầu
+              </button>
+            </motion.div>
+
+            {/* Cột thống kê */}
+            <div className="w-full md:w-2/3 flex justify-center">
+              <Statistics />
+            </div>
+          </div>
+        </div>
+      </div>
       {/*Footer */}
       <Footer />
       {/*Coopy right */}

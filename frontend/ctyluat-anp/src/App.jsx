@@ -31,6 +31,7 @@ import CreateNews from "./pages/Admin/ManagementNews/CreateNews";
 import Services from "./pages/Services/Services";
 import ServiceDetail from "./pages/Services/ServicesDetail";
 import ServicesPost from "./pages/Services/ServicesPost";
+import LegalConsultPopup from "./popup/LegalConsultPopup";
 
 const PrivateRoute = ({ element }) => {
   const token = localStorage.getItem("token");
@@ -43,6 +44,8 @@ const AppContent = () => {
 
   return (
     <>
+    {/* Hiển thị popup khi load trang nếu không phải trang admin */}
+    {!isAdminRoute && <LegalConsultPopup />}
       <Routes>
         <Route path="/" exact element={<Home />} />
         <Route path="/danhmuc/ve-chung-toi" exact element={<Company />} />

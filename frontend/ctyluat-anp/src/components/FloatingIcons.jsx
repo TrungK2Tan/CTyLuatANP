@@ -13,7 +13,7 @@ const FloatingIcons = () => {
       <div className="fixed left-4 bottom-20 flex flex-col gap-3 z-50">
         {/* Zalo (Lắc) */}
         <motion.a
-          href="https://zalo.me/0903601234"
+          href="https://zalo.me/0909 229 689"
           target="_blank"
           rel="noopener noreferrer"
           className="relative w-14 h-14 flex items-center justify-center transition"
@@ -27,7 +27,7 @@ const FloatingIcons = () => {
 
         {/* Phone (Chỉ icon lắc, text đứng yên) */}
         <a
-          href="tel:0903601234"
+          href="tel:0909 229 689"
           className="relative flex items-center gap-2 bg-white p-2 rounded-full shadow-lg border border-green-500"
         >
           <motion.div
@@ -39,7 +39,7 @@ const FloatingIcons = () => {
             {/* Hiệu ứng vòng tròn lan tỏa */}
             <span className="absolute w-full h-full bg-green-300 rounded-full opacity-50 animate-ping"></span>
           </motion.div>
-          <span className="text-red-500 font-bold">Gọi: 090 360 1234</span>
+          <span className="text-red-500 font-bold">Gọi: 0909 229 689</span>
         </a>
       </div>
 

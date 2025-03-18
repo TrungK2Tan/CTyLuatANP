@@ -28,23 +28,11 @@ const Footer = () => {
                 <IoLocationOutline className="text-lg md:text-2xl" />
                 <div>
                   <span className="font-semibold text-base md:text-lg">
-                    TRỤ SỞ CHÍNH
+                    CAFE CÙNG LUẬT SƯ
                   </span>
                   <span className="block text-sm">
-                    Tổ dân phố Viên 3 - Phường Cổ Nhuế 2 - Quận Bắc Từ Liêm - Hà
-                    Nội
-                  </span>
-                </div>
-              </li>
-              <li className="flex items-start gap-2">
-                <IoLocationOutline className="text-lg md:text-2xl" />
-                <div>
-                  <span className="font-semibold text-base md:text-lg">
-                    VĂN PHÒNG HN
-                  </span>
-                  <span className="block text-sm">
-                    Tầng 5 Tòa N07, Trần Đăng Ninh, P. Dịch Vọng, Q. Cầu Giấy,
-                    TP. Hà Nội
+                    Tầng 1, Số 232 Nguyễn Thị Minh Khai, Phường Võ Thị Sáu, Quận
+                    3, TP.HCM
                   </span>
                 </div>
               </li>
@@ -61,12 +49,38 @@ const Footer = () => {
                 </div>
               </li>
               <li className="flex items-start gap-2">
+                <IoLocationOutline className="text-lg md:text-2xl" />
+                <div>
+                  <span className="font-semibold text-base md:text-lg">
+                    TRỤ SỞ CHÍNH
+                  </span>
+                  <span className="block text-sm">
+                    Tổ dân phố Viên 3 - Phường Cổ Nhuế 2 - Quận Bắc Từ Liêm - Hà
+                    Nội
+                  </span>
+                </div>
+              </li>
+
+              <li className="flex items-start gap-2">
+                <IoLocationOutline className="text-lg md:text-2xl" />
+                <div>
+                  <span className="font-semibold text-base md:text-lg">
+                    VĂN PHÒNG HN
+                  </span>
+                  <span className="block text-sm">
+                    Tầng 5 Tòa N07, Trần Đăng Ninh, P. Dịch Vọng, Q. Cầu Giấy,
+                    TP. Hà Nội
+                  </span>
+                </div>
+              </li>
+              
+              <li className="flex items-start gap-2">
                 <MdOutlinePhoneIphone className="text-lg md:text-2xl" />
                 <div>
                   <span className="font-semibold text-base md:text-lg">
                     ĐIỆN THOẠI
                   </span>
-                  <span className="block text-sm">090 360 1234</span>
+                  <span className="block text-sm">0909 229 689</span>
                 </div>
               </li>
               <li className="flex items-start gap-2">
@@ -82,9 +96,6 @@ const Footer = () => {
               </li>
               <li className="flex items-start gap-2">
               Giấy chứng nhận đăng ký hoạt động số 01021463/TP/ĐKHĐ do Sở Tư pháp Hà Nội cấp ngày 01/10/2018
-              </li>
-              <li className="flex items-start gap-2">
-              Người đại diện: Luật sư Nguyễn Văn Thân
               </li>
             </ul>
           </div>
