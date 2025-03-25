@@ -3,7 +3,7 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import { FaAngleLeft, FaAngleRight, FaQuoteLeft, FaQuoteRight } from "react-icons/fa";
-import TonChi from "../img/luatanp.jpg";
+import TonChi from "../img/luat_su.jpg";
 
 const testimonials = [
   {

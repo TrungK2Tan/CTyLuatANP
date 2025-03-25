@@ -4,7 +4,7 @@ import Footer from "../../components/Footer";
 import Banner from "../../img/detail_banner.png";
 import LsuLaiVanDoan from "../../img/luatSu/luat-su-lai-van-doan-vicoly.jpg";
 import LsuNguyenDacUyen from "../../img/luatSu/luat-su-nguyen-dac-uyen.jpg";
-import LsuNguyenVanThan from "../../img/luatSu/luat-su-nguyen-van-than(1).jpg";
+import Lsu from "../../img/luat_su.jpg";
 import { FaFacebookF, FaLinkedinIn, FaTwitter } from "react-icons/fa";
 const Members = () => {
   // Dữ liệu danh sách luật sư
@@ -20,9 +20,9 @@ const Members = () => {
       image: LsuNguyenDacUyen,
     },
     {
-      name: "NGUYỄN VĂN THÂN",
+      name: "Triệu Thị Linh Huệ",
       role: "GIÁM ĐỐC ĐIỀU HÀNH - LUẬT SƯ",
-      image: LsuNguyenVanThan,
+      image: Lsu,
     },
   ];
   return (
@@ -40,13 +40,17 @@ const Members = () => {
       <div className="container mx-auto px-4 py-10 w-[70%]">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {members.map((member, index) => (
-            <div key={index} className="group bg-white shadow-lg rounded-lg overflow-hidden relative">
+            <div
+              key={index}
+              className="group bg-white shadow-lg rounded-lg overflow-hidden relative"
+            >
               {/* Ảnh Luật Sư */}
               <img
                 src={member.image}
                 alt={member.name}
-                className="w-full h-100 object-cover"
+                className="w-full h-100 object-cover object-top"
               />
+
               {/* Thông tin luật sư (Luôn hiển thị, đổi màu khi hover) */}
               <div className="p-4 text-center transition-colors duration-300 bg-white group-hover:bg-blue-600">
                 <h3 className="text-lg font-semibold text-gray-800 group-hover:text-white">

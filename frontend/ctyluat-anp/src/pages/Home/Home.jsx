@@ -16,6 +16,19 @@ import { useState } from "react";
 import Footer from "../../components/Footer";
 import { useNavigate } from "react-router-dom";
 export default function Home() {
+  const images = ["./src/img/banner/banner.png","./src/img/banner2.jpg" ];
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const nextSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex(
+      (prevIndex) => (prevIndex - 1 + images.length) % images.length
+    );
+  };
   const toSlug = (title) => {
     return title
       .toLowerCase()
@@ -42,7 +55,9 @@ export default function Home() {
         "Hợp đồng nếu không được soạn kỹ có thể gặp nhiều rủi ro: chủ thể hợp đồng, đối tượng giao dịch, điều khoản đôi bên, trách nhiệm và nghĩa vụ, thủ tục pháp lý...",
     },
     {
-      icon: <img src={DoanhNghiep} alt="Dịch vụ" className="w-[90px] h-[90px]" />,
+      icon: (
+        <img src={DoanhNghiep} alt="Dịch vụ" className="w-[90px] h-[90px]" />
+      ),
       title: " LUẬT DÂN SỰ",
       url: `/${toSlug("TƯ VẤN LUẬT DÂN SỰ")}`,
       description:
@@ -56,7 +71,9 @@ export default function Home() {
         "Với đội ngũ luật sư chuyên gia có nhiều năm kinh nghiệm trong ngành luật và văn phòng tại Hà Nội và TP. Hồ Chí Minh, chúng tôi cam kết mang đến dịch vụ pháp lý toàn diện nhất...",
     },
     {
-      icon: <img src={LuatSuDanSu} alt="Dịch vụ" className="w-[90px] h-[90px]" />,
+      icon: (
+        <img src={LuatSuDanSu} alt="Dịch vụ" className="w-[90px] h-[90px]" />
+      ),
       title: " THỪA KẾ",
       url: `/${toSlug("TƯ VẤN THỪA KẾ")}`,
       description:
@@ -110,15 +127,29 @@ export default function Home() {
       <Header />
       {/* Carousel */}
       <div className="relative w-full h-[300px] md:h-[500px] mt-20">
-        <img
-          src="./src/img/banner2.jpg"
+        <motion.img
+          key={currentIndex}
+          src={images[currentIndex]}
           alt="Law Image"
           className="w-full h-full object-cover"
+          initial={{ opacity: 0, x: 100 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -100 }}
+          transition={{ duration: 0.5 }}
         />
-        <button className="absolute left-2 top-1/2 -translate-y-1/2 bg-gray-700 text-white p-2 rounded-full">
+
+        {/* Nút chuyển đổi sang trái */}
+        <button
+          className="absolute left-2 top-1/2 -translate-y-1/2 bg-gray-700 text-white p-2 rounded-full"
+          onClick={prevSlide}
+        >
           <FaChevronLeft />
         </button>
-        <button className="absolute right-2 top-1/2 -translate-y-1/2 bg-gray-700 text-white p-2 rounded-full">
+        {/* Nút chuyển đổi sang phải */}
+        <button
+          className="absolute right-2 top-1/2 -translate-y-1/2 bg-gray-700 text-white p-2 rounded-full"
+          onClick={nextSlide}
+        >
           <FaChevronRight />
         </button>
       </div>
@@ -154,8 +185,7 @@ export default function Home() {
                 trợ khách hàng:
                 <br />
                 <br />
-                Cafe cùng Luật sư: 232 Nguyễn Thị Minh Khai, Phường Võ Thị Sáu,
-                Quận 3, TP.HCM
+                Cafe cùng Luật sư: 88 Công Trường An Đông, Phường 9, Quận 5, TpHCM 
                 <br />
                 VP Hồ Chí Minh: 232 Nguyễn Thị Minh Khai, Phường Võ Thị Sáu,
                 Quận 3, TP.HCM
@@ -163,7 +193,6 @@ export default function Home() {
                 VP Hà Nội: Tầng 5, Tòa N07, Trần Đăng Ninh, Q. Cầu Giấy, TP. Hà
                 Nội
                 <br />
-               
                 <br />
                 Hotline 24/7:
                 <strong className="text-red-400 font-bold">
@@ -174,11 +203,11 @@ export default function Home() {
                 Email: congtyluatanp232hcm@gmail.com
               </p>
               <button
-      className="ml-4 mt-6 px-6 py-3 bg-blue-500 text-white font-bold rounded-lg shadow-md hover:bg-orange-500 transition duration-700"
-      onClick={() => navigate("/danhmuc/ve-chung-toi")}
-    >
-      Tìm hiểu thêm
-    </button>
+                className="ml-4 mt-6 px-6 py-3 bg-blue-500 text-white font-bold rounded-lg shadow-md hover:bg-orange-500 transition duration-700"
+                onClick={() => navigate("/danhmuc/ve-chung-toi")}
+              >
+                Tìm hiểu thêm
+              </button>
             </div>
 
             {/* Cột Hình ảnh */}
@@ -224,20 +253,20 @@ export default function Home() {
                   {service.description}
                 </p>
                 <button
-            className="px-10 py-3 bg-blue-500 text-white font-bold rounded-lg transition-colors ease-in-out hover:bg-orange-500 duration-700"
-            onClick={() => (window.location.href = service.url)}
-            // Điều hướng trang
-          >
-            CHI TIẾT
-          </button>
+                  className="px-10 py-3 bg-blue-500 text-white font-bold rounded-lg transition-colors ease-in-out hover:bg-orange-500 duration-700"
+                  onClick={() => (window.location.href = service.url)}
+                  // Điều hướng trang
+                >
+                  CHI TIẾT
+                </button>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
-            {/*Activiti  */}
-            <MissionStatement />
-      
+      {/*Activiti  */}
+      <MissionStatement />
+
       {/*News   */}
       <News />
       {/* FAQ Section */}
@@ -254,7 +283,6 @@ export default function Home() {
             </div>
             {/* Cột Văn bản */}
             <div className="flex-1 text-left max-w-2xl">
-              
               <p className="text-red-500 font-bold text-lg text-gray-700 mb-4 mt-4 md:text-2xl">
                 CÁC VẤN ĐỀ THƯỜNG HAY GẶP PHẢI
               </p>
@@ -295,8 +323,8 @@ export default function Home() {
           </div>
         </div>
       </section>
-{/* Banner Bottom Responsive */}
-<div
+      {/* Banner Bottom Responsive */}
+      <div
         className="relative w-full min-h-[500px] md:min-h-[500px] flex items-center justify-center bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('./src/img/background.jpg')" }}
       >
@@ -323,7 +351,10 @@ export default function Home() {
                 Hãy gửi yêu cầu nếu bạn cần luật sư giải quyết vấn đề pháp lý
                 của mình.
               </p>
-              <button  onClick={() => navigate("/danhmuc/lien-he")} className="py-2 px-6 bg-blue-500 text-white text-lg font-bold shadow-lg transition-all duration-700 ease-in-out hover:bg-orange-500 hover:translate-y-1">
+              <button
+                onClick={() => navigate("/danhmuc/lien-he")}
+                className="py-2 px-6 bg-blue-500 text-white text-lg font-bold shadow-lg transition-all duration-700 ease-in-out hover:bg-orange-500 hover:translate-y-1"
+              >
                 Gửi yêu cầu
               </button>
             </motion.div>

@@ -31,8 +31,7 @@ const Footer = () => {
                     CAFE CÙNG LUẬT SƯ
                   </span>
                   <span className="block text-sm">
-                    Tầng 1, Số 232 Nguyễn Thị Minh Khai, Phường Võ Thị Sáu, Quận
-                    3, TP.HCM
+                  88 Công Trường An Đông, Phường 9, Quận 5, TpHCM 
                   </span>
                 </div>
               </li>
