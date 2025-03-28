@@ -6,7 +6,7 @@ import Header from "../../components/Header";
 import Banner from "../../img/detail_banner.png";
 import Footer from "../../components/Footer";
 
-const itemsPerPage = 3;
+const itemsPerPage = 9;
 
 const Services = () => {
   const { serviceSlug } = useParams();
@@ -14,12 +14,12 @@ const Services = () => {
   const [posts, setPosts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
-
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`http://localhost:8000/posts/${serviceSlug}`);
+        const response = await axios.get(`${API_URL}/posts/${serviceSlug}`);
   
         setService(response.data.service);
         setPosts(response.data.posts || []); // Nếu không có bài viết, đặt posts là mảng rỗng
@@ -75,8 +75,8 @@ const Services = () => {
                       <img src={post.image} alt={post.title} className="w-full h-80 object-cover" />
                     </Link>
                     <div className="p-4">
-                      <h3 className="text-lg font-semibold text-gray-800">{post.title}</h3>
-                      <p className="text-sm text-gray-600 mt-2 line-clamp-3">{post.description}</p>
+                      <h3 className="text-lg font-semibold text-gray-800 line-clamp-1">{post.title}</h3>
+                      <p className="text-sm text-gray-600 mt-2 line-clamp-1">{post.description}</p>
                       <Link
                         to={`/${post.slug}`}
                         className="mt-3 inline-block text-white bg-blue-600 px-4 py-2 rounded-lg text-sm font-bold shadow-md hover:bg-orange-500 transition duration-700"

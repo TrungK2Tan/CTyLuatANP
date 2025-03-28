@@ -19,7 +19,6 @@ import FormDetail from "./pages/Form/FormDetail";
 import CreateForm from "./pages/Admin/Forms/CreateForm";
 import FormManagement from "./pages/Admin/Forms/FormManagement";
 import NewsManagement from "./pages/Admin/ManagementNews/NewsManagement";
-import QuestionManagement from "./pages/Admin/ManagementQuestion/QuestionManagement";
 import ServicesManagement from "./pages/Admin/ManagementServices/ServicesManagement";
 import FormDetailManagement from "./pages/Admin/Forms/FormDetailManagement";
 import EditForm from "./pages/Admin/Forms/EditForm";

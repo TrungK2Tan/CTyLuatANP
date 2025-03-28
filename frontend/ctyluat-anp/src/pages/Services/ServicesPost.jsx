@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AdminSidebar from "../Admin/components/AdminSidebar";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
 const ServicesPost = () => {
   const [imageFile, setImageFile] = useState(null);
   const [admin, setAdmin] = useState({});
@@ -15,7 +17,7 @@ const ServicesPost = () => {
     description: "",
     content: "",
   });
-  const [editingPost, setEditingPost] = useState(null); // Lưu bài viết đang chỉnh sửa
+  const [editingPost, setEditingPost] = useState(null);
 
   useEffect(() => {
     const storedAdmin = JSON.parse(localStorage.getItem("admin"));
@@ -24,7 +26,7 @@ const ServicesPost = () => {
     }
 
     axios
-      .get("http://localhost:8000/categories")
+      .get(`${API_URL}/categories`)
       .then((response) => {
         const servicesList = response.data.reduce((acc, category) => {
           return [...acc, ...category.services];
@@ -36,7 +38,7 @@ const ServicesPost = () => {
 
   const fetchPostsByService = (service) => {
     axios
-      .get(`http://localhost:8000/posts/${service.slug}`)
+      .get(`${API_URL}/posts/${service.slug}`)
       .then((response) => {
         setSelectedService(service);
         setPosts(response.data.posts);
@@ -47,51 +49,54 @@ const ServicesPost = () => {
       });
   };
 
-  const addPost = () => {
+  const addPost = async () => {
     if (!selectedService) return alert("Hãy chọn một dịch vụ trước!");
-  
-    if (!imageFile || !newPost.title || !newPost.description || !newPost.content) {
+    if (
+      !imageFile ||
+      !newPost.title ||
+      !newPost.description ||
+      !newPost.content
+    ) {
       alert("Vui lòng điền đầy đủ thông tin và chọn ảnh!");
       return;
     }
-  
+
     const formData = new FormData();
     formData.append("service_slug", selectedService.slug);
     formData.append("title", newPost.title.trim());
     formData.append("description", newPost.description.trim());
     formData.append("content", newPost.content.trim());
-    formData.append("image", imageFile); // Gửi ảnh lên server
-  
-    axios
-      .post("http://localhost:8000/posts", formData, {
+    formData.append("image", imageFile);
+
+    try {
+      await axios.post(`${API_URL}/posts`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
-      })
-      .then((response) => {
-        setPosts([...posts, response.data.post]);
-        setNewPost({ title: "", description: "", content: "" });
-        setImageFile(null);
-      })
-      .catch((error) => {
-        console.error("Lỗi khi thêm bài viết:", error.response?.data || error);
-        alert("Lỗi khi thêm bài viết. Kiểm tra console để biết chi tiết.");
       });
+      setNewPost({ title: "", description: "", content: "" });
+      setImageFile(null);
+      fetchPostsByService(selectedService);
+    } catch (error) {
+      console.error("Lỗi khi thêm bài viết:", error.response?.data || error);
+      alert("Lỗi khi thêm bài viết. Kiểm tra console để biết chi tiết.");
+    }
   };
-  
+  const deletePost = async (slug) => {
+    if (!window.confirm("Bạn có chắc chắn muốn xóa bài viết này?")) return;
 
-  const deletePost = (postSlug) => {
-    axios
-      .delete(`http://localhost:8000/posts/${postSlug}`)
-      .then(() => {
-        setPosts(posts.filter((p) => p.slug !== postSlug));
-      })
-      .catch((error) => console.error("Lỗi khi xóa bài viết:", error));
+    try {
+      await axios.delete(`${API_URL}/posts/${slug}`);
+      setPosts(posts.filter((p) => p.slug !== slug));
+    } catch (error) {
+      console.error("Lỗi khi xóa bài viết:", error);
+      alert("Không thể xóa bài viết.");
+    }
   };
-
   const startEditing = (post) => {
-    setEditingPost(post);
+    setEditingPost({ ...post });
+    setEditingImageFile(null);
   };
 
-  const updatePost = () => {
+  const updatePost = async () => {
     const formData = new FormData();
     formData.append("title", editingPost.title);
     formData.append("description", editingPost.description);
@@ -99,19 +104,24 @@ const ServicesPost = () => {
     if (editingImageFile) {
       formData.append("image", editingImageFile);
     }
-  
-    axios
-      .put(`http://localhost:8000/posts/${editingPost.slug}`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
-      .then((response) => {
-        setPosts(posts.map((p) => (p.slug === editingPost.slug ? response.data.post : p)));
-        setEditingPost(null);
-        setEditingImageFile(null);
-      })
-      .catch((error) => console.error("Lỗi khi cập nhật bài viết:", error));
+
+    try {
+      const response = await axios.put(
+        `${API_URL}/posts/${editingPost.slug}`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      setPosts(
+        posts.map((p) => (p.slug === editingPost.slug ? response.data.post : p))
+      );
+      setEditingPost(null);
+      setEditingImageFile(null);
+    } catch (error) {
+      console.error("Lỗi khi cập nhật bài viết:", error);
+    }
   };
-  
 
   return (
     <div className="flex h-screen">
@@ -185,28 +195,96 @@ const ServicesPost = () => {
                 ))}
               </tbody>
             </table>
-
             {selectedService && (
-          <>
-            <h2 className="text-xl font-semibold mt-4">➕ Thêm bài viết mới</h2>
-            <input type="text" placeholder="Tiêu đề" className="border p-2 w-full mt-2" value={newPost.title} onChange={(e) => setNewPost({ ...newPost, title: e.target.value })} />
-            <input type="file" className="border p-2 w-full mt-2" onChange={(e) => setImageFile(e.target.files[0])} />
-            <textarea placeholder="Mô tả" className="border p-2 w-full mt-2" value={newPost.description} onChange={(e) => setNewPost({ ...newPost, description: e.target.value })} />
-            <textarea placeholder="Nội dung bài viết" className="border p-2 w-full mt-2" value={newPost.content} onChange={(e) => setNewPost({ ...newPost, content: e.target.value })} />
-            <button onClick={addPost} className="bg-green-500 text-white p-2 rounded mt-2">Thêm bài viết</button>
-
-            {editingPost && (
               <>
-                <h2 className="text-xl font-semibold mt-6">✏️ Sửa bài viết</h2>
-                <input type="text" className="border p-2 w-full mt-2" value={editingPost.title} onChange={(e) => setEditingPost({ ...editingPost, title: e.target.value })} />
-                <input type="file" className="border p-2 w-full mt-2" onChange={(e) => setEditingImageFile(e.target.files[0])} />
-                <textarea className="border p-2 w-full mt-2" value={editingPost.description} onChange={(e) => setEditingPost({ ...editingPost, description: e.target.value })} />
-                <textarea className="border p-2 w-full mt-2" value={editingPost.content} onChange={(e) => setEditingPost({ ...editingPost, content: e.target.value })} />
-                <button onClick={updatePost} className="bg-blue-500 text-white p-2 rounded mt-2">Cập nhật bài viết</button>
+                <h2 className="text-xl font-semibold mt-4">
+                  ➕ Thêm bài viết mới
+                </h2>
+                <input
+                  type="text"
+                  placeholder="Tiêu đề"
+                  className="border p-2 w-full mt-2"
+                  value={newPost.title}
+                  onChange={(e) =>
+                    setNewPost({ ...newPost, title: e.target.value })
+                  }
+                />
+                <input
+                  type="file"
+                  className="border p-2 w-full mt-2"
+                  onChange={(e) => setImageFile(e.target.files[0])}
+                />
+                <textarea
+                  placeholder="Mô tả"
+                  className="border p-2 w-full mt-2"
+                  value={newPost.description}
+                  onChange={(e) =>
+                    setNewPost({ ...newPost, description: e.target.value })
+                  }
+                />
+                <textarea
+                  placeholder="Nội dung bài viết"
+                  className="border p-2 w-full mt-2"
+                  value={newPost.content}
+                  onChange={(e) =>
+                    setNewPost({ ...newPost, content: e.target.value })
+                  }
+                />
+                <button
+                  onClick={addPost}
+                  className="bg-green-500 text-white p-2 rounded mt-2"
+                >
+                  Thêm bài viết
+                </button>
               </>
             )}
-          </>
-        )}
+            {editingPost && (
+              <div className="mt-4 p-4 bg-white shadow rounded">
+                <h2 className="text-xl font-semibold">✏️ Chỉnh sửa bài viết</h2>
+                <input
+                  type="text"
+                  className="border p-2 w-full mt-2"
+                  value={editingPost.title}
+                  onChange={(e) =>
+                    setEditingPost({ ...editingPost, title: e.target.value })
+                  }
+                />
+                <input
+                  type="file"
+                  className="border p-2 w-full mt-2"
+                  onChange={(e) => setEditingImageFile(e.target.files[0])}
+                />
+                <textarea
+                  className="border p-2 w-full mt-2"
+                  value={editingPost.description}
+                  onChange={(e) =>
+                    setEditingPost({
+                      ...editingPost,
+                      description: e.target.value,
+                    })
+                  }
+                />
+                <textarea
+                  className="border p-2 w-full mt-2"
+                  value={editingPost.content}
+                  onChange={(e) =>
+                    setEditingPost({ ...editingPost, content: e.target.value })
+                  }
+                />
+                <button
+                  onClick={updatePost}
+                  className="bg-blue-500 text-white p-2 rounded mt-2"
+                >
+                  Cập nhật
+                </button>
+                <button
+                  onClick={() => setEditingPost(null)}
+                  className="bg-gray-500 text-white p-2 rounded mt-2 ml-2"
+                >
+                  Hủy
+                </button>
+              </div>
+            )}
           </>
         )}
       </div>

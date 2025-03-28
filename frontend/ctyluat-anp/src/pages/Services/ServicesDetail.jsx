@@ -11,7 +11,7 @@ import {
   FaTwitter,
   FaUser,
 } from "react-icons/fa6";
-
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const ServiceDetail = () => {
   const { postSlug } = useParams();
   const [post, setPost] = useState(null);
@@ -20,7 +20,7 @@ const ServiceDetail = () => {
     const fetchServiceDetail = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/service/${postSlug}`
+          `${API_URL}/service/${postSlug}`
         );
         setPost(response.data);
       } catch (error) {
@@ -30,7 +30,7 @@ const ServiceDetail = () => {
 
     const fetchNewsList = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/news");
+        const response = await axios.get(`${API_URL}/news`);
         const allServices = response.data;
 
         // Lấy 5 tin tuc mới nhất

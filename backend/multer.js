@@ -1,33 +1,41 @@
+const cloudinary = require("cloudinary").v2;
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const multer = require("multer");
-const path = require("path");
+require("dotenv").config();
 
-// Cấu hình nơi lưu trữ file
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, "./uploads"); // Lưu vào thư mục uploads
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + path.extname(file.originalname)); // Đổi tên file để tránh trùng lặp
-    },
+// 🔥 Cấu hình Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Bộ lọc để chấp nhận ảnh + tài liệu
-const fileFilter = (req, file, cb) => {
-    const allowedTypes = [
-        "image/jpeg", "image/png", "image/gif",         // Ảnh
-        "application/pdf",                              // PDF
-        "application/msword",                           // DOC
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document" // DOCX
-    ];
+// 📌 Cấu hình Multer cho ảnh -> Lưu trên Cloudinary
+const storageCloudinary = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: async (req, file) => ({
+    folder: "images",
+    format: file.mimetype.split("/")[1],
+    public_id: Date.now() + "-" + file.originalname,
+    resource_type: "image",
+  }),
+});
 
-    if (allowedTypes.includes(file.mimetype)) {
-        cb(null, true);
-    } else {
-        cb(new Error("Chỉ cho phép tải lên file ảnh hoặc tài liệu (.doc, .docx, .pdf)"), false);
-    }
-};
+// 📌 Cấu hình Multer cho tài liệu -> Lưu trên Cloudinary
+const storageCloudinaryFile = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: async (req, file) => ({
+    folder: "documents",
+    format: file.originalname.split(".").pop(),
+    public_id: Date.now() + "-" + file.originalname,
+    resource_type: "auto", // ⚡ Để Cloudinary tự nhận diện file
+  }),
+});
 
-// Khởi tạo multer với cấu hình trên
-const upload = multer({ storage, fileFilter });
-
-module.exports = upload;
+// 🔥 Khởi tạo Multer với cấu hình Cloudinary
+const uploadImage = multer({ storage: storageCloudinary });
+const uploadFile = multer({ storage: storageCloudinaryFile });
+// ✅ Cấu hình Multer lưu file tạm vào thư mục "uploads/"
+const upload = multer({ dest: "uploads/" });
+// ✅ Xuất các module
+module.exports = { upload, uploadImage, uploadFile, cloudinary };

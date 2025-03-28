@@ -283,7 +283,7 @@ export default function Home() {
             </div>
             {/* Cột Văn bản */}
             <div className="flex-1 text-left max-w-2xl">
-              <p className="text-red-500 font-bold text-lg text-gray-700 mb-4 mt-4 md:text-2xl">
+              <p className="text-red-500 font-bold text-lg  mb-4 mt-4 md:text-2xl">
                 CÁC VẤN ĐỀ THƯỜNG HAY GẶP PHẢI
               </p>
               <div className="space-y-3">

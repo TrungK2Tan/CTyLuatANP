@@ -3,7 +3,7 @@ import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import Banner from "../../img/detail_banner.png";
 import { FaEnvelope, FaMapMarkedAlt, FaPhone, FaRegFileAlt, FaUser } from "react-icons/fa";
-
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -23,7 +23,7 @@ const Contact = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8000/api/send-email", {
+      const response = await fetch(`${API_URL}/api/send-email`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

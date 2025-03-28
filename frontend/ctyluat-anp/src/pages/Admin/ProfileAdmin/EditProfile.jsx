@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AdminSidebar from "../components/AdminSidebar";
 import axios from "axios";
-
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const EditProfile = () => {
   const [admin, setAdmin] = useState({
     fullName: "",
@@ -51,7 +51,7 @@ const EditProfile = () => {
       delete updatedAdmin.email; // Không cập nhật email
   
       const response = await axios.put(
-        "http://localhost:8000/update-user",
+        `${API_URL}/update-user`,
         updatedAdmin,
         {
           headers: {

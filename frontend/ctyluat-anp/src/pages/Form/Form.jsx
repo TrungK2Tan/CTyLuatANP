@@ -5,14 +5,14 @@ import { Link } from "react-router-dom"; // Import Link
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import Banner from "../../img/detail_banner.png";
-
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const Form = () => {
   const [forms, setForms] = useState([]);
 
   // Gọi API lấy danh sách biểu mẫu
   useEffect(() => {
     axios
-      .get("http://localhost:8000/forms")
+      .get(`${API_URL}/forms`)
       .then((response) => {
         setForms(response.data);
       })
@@ -56,7 +56,7 @@ const Form = () => {
                   <h3 className="text-lg font-semibold text-gray-800">
                     {form.title}
                   </h3>
-                  <p className="text-sm text-gray-600 mt-2">
+                  <p className="text-sm text-gray-600 mt-2 line-clamp-1">
                     {form.description}
                   </p>
                   <Link

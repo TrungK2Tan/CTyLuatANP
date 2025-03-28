@@ -2,13 +2,15 @@ import React, { useState, useEffect } from "react";
 import Slider from "react-slick";
 import axios from "axios"; // Dùng axios để gọi API
 import { Link } from "react-router-dom"; // Sử dụng Link để điều hướng
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const News = () => {
   const [news, setNews] = useState([]); // State để lưu danh sách bài viết
   // Gọi API lấy danh sách tin tức khi component mount
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/news");
+        const response = await axios.get(`${API_URL}/news`);
         setNews(response.data);
       } catch (error) {
         console.error("Lỗi khi lấy danh sách tin tức:", error);

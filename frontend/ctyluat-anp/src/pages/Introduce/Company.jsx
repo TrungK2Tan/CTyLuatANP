@@ -5,13 +5,14 @@ import { FaChevronRight, FaSearch } from "react-icons/fa";
 import image1 from "../../img/about.jpg";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const Company = () => {
   const { slug } = useParams();
   const [latestNews, setLatestNews] = useState([]);
   useEffect(() => {
     const fetchNewsList = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/news");
+        const response = await axios.get(`${API_URL}/news`);
         const allNews = response.data;
         // Lấy 3 bài viết mới nhất
         setLatestNews(allNews.slice(-5));

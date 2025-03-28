@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AdminSidebar from "../components/AdminSidebar";
-
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const NewsManagement = () => {
   const [admin, setAdmin] = useState({});
   const [news, setNews] = useState([]);
@@ -17,7 +17,7 @@ const NewsManagement = () => {
 
   const fetchNews = () => {
     setLoading(true);
-    fetch("http://localhost:8000/news")
+    fetch(`${API_URL}/news`)
       .then((res) => res.json())
       .then((data) => {
         setNews(data);
@@ -34,7 +34,7 @@ const NewsManagement = () => {
     if (!confirmDelete) return;
 
     try {
-      const res = await fetch(`http://localhost:8000/news/${slug}`, {
+      const res = await fetch(`${API_URL}/news/${slug}`, {
         method: "DELETE",
       });
       const data = await res.json();

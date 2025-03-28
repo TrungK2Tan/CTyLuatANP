@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AdminSidebar from "../components/AdminSidebar";
 import axios from "axios";
-
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const ServicesManagement = () => {
   const [admin, setAdmin] = useState({});
   const [categories, setCategories] = useState([]);
@@ -20,7 +20,7 @@ const ServicesManagement = () => {
       setAdmin(storedAdmin);
     }
 
-    axios.get("http://localhost:8000/categories")
+    axios.get(`${API_URL}/categories`)
       .then(response => {
         setCategories(response.data);
       })
@@ -28,7 +28,7 @@ const ServicesManagement = () => {
   }, []);
 
   const fetchServicesByCategory = (category) => {
-    axios.get(`http://localhost:8000/services/${category.slug}`)
+    axios.get(`${API_URL}/services/${category.slug}`)
       .then(response => {
         setSelectedCategory(category);
         setServices(response.data.services);
@@ -39,7 +39,7 @@ const ServicesManagement = () => {
   };
 
   const fetchPostsByService = (service) => {
-    axios.get(`http://localhost:8000/posts/${service.slug}`)
+    axios.get(`${API_URL}/posts/${service.slug}`)
       .then(response => {
         setSelectedService(service);
         setPosts(response.data.posts);
@@ -53,7 +53,7 @@ const ServicesManagement = () => {
   const addService = () => {
     if (!selectedCategory || !newServiceName) return;
 
-    axios.post(`http://localhost:8000/categories/${selectedCategory._id}/services`, { name: newServiceName })
+    axios.post(`${API_URL}/categories/${selectedCategory._id}/services`, { name: newServiceName })
       .then(response => {
         setServices(response.data.category.services);
         setNewServiceName("");
@@ -62,7 +62,7 @@ const ServicesManagement = () => {
   };
 
   const deleteService = (serviceSlug) => {
-    axios.delete(`http://localhost:8000/categories/${selectedCategory._id}/services/${serviceSlug}`)
+    axios.delete(`${API_URL}/categories/${selectedCategory._id}/services/${serviceSlug}`)
       .then(() => {
         setServices(services.filter(s => s.slug !== serviceSlug));
       })
@@ -77,7 +77,7 @@ const ServicesManagement = () => {
   const updateService = () => {
     if (!editingService || !editServiceName) return;
 
-    axios.put(`http://localhost:8000/categories/${selectedCategory._id}/services/${editingService.slug}`, { name: editServiceName })
+    axios.put(`${API_URL}/categories/${selectedCategory._id}/services/${editingService.slug}`, { name: editServiceName })
       .then(response => {
         setServices(response.data.category.services);
         setEditingService(null);

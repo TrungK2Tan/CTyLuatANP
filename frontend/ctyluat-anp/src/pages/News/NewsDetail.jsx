@@ -12,7 +12,7 @@ import {
   FaUser,
 } from "react-icons/fa6";
 import { Link } from "react-router-dom";
-
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const NewsDetail = () => {
   const { slug } = useParams();
   const [news, setNews] = useState(null);
@@ -22,7 +22,7 @@ const NewsDetail = () => {
   useEffect(() => {
     const fetchNewsDetail = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/news/${slug}`);
+        const response = await axios.get(`${API_URL}/news/${slug}`);
         setNews(response.data);
       } catch (error) {
         console.error("Lỗi khi lấy tin tức:", error);
@@ -31,7 +31,7 @@ const NewsDetail = () => {
 
     const fetchNewsList = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/news");
+        const response = await axios.get(`${API_URL}/news`);
         const allNews = response.data;
 
         // Lọc bài viết liên quan (trừ bài viết hiện tại)

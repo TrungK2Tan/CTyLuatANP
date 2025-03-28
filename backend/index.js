@@ -1,12 +1,12 @@
 require("dotenv").config();
+const fs = require("fs"); // ✅ Import file system để xử lý file tạm thời
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const express = require("express");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const path = require("path");
-const upload = require("./multer");
-const slugify = require("slugify");
+const { upload, uploadImage, uploadFile } = require("./multer");
 const CategoryServices = require("./models/categoryServices.model");
 const PostServices = require("./models/postServices.model");
 const User = require("./models/user.model");
@@ -16,6 +16,7 @@ const { authenticateToken } = require("./utilities");
 require("dotenv").config();
 const cloudinary = require("cloudinary").v2;
 const { sendContactEmail } = require("./sendmail");
+const PORT = process.env.PORT || 8000;
 // ✅ Sử dụng biến môi trường thay vì config.json
 const mongoURI = process.env.MONGO_URI;
 if (!mongoURI) {
@@ -184,13 +185,12 @@ app.put("/update-user", authenticateToken, async (req, res) => {
 app.post("/forms", async (req, res) => {
   const { title, description, image, content, fileUrl } = req.body;
 
-  if (!title || !description || !content || !fileUrl) {
+  if (!title || !description || !content || !fileUrl || !image) {
     return res.status(400).json({ error: "Thiếu thông tin bắt buộc" });
   }
 
   try {
-    const slug = toSlug(title); // Dùng hàm toSlug để tạo slug chuẩn
-
+    const slug = toSlug(title);
 
     const newForm = new Form({
       title,
@@ -202,14 +202,13 @@ app.post("/forms", async (req, res) => {
     });
 
     await newForm.save();
-    res
-      .status(201)
-      .json({ message: "Thêm biểu mẫu thành công", form: newForm });
+    res.status(201).json({ message: "Thêm biểu mẫu thành công", form: newForm });
   } catch (error) {
-    console.error(" Lỗi khi tạo biểu mẫu:", error); // In lỗi ra console
+    console.error("Lỗi khi tạo biểu mẫu:", error);
     res.status(500).json({ error: "Lỗi tạo biểu mẫu", details: error.message });
   }
 });
+
 // API Cập nhật biểu mẫu có hỗ trợ file upload
 app.put(
   "/forms/:slug",
@@ -219,34 +218,52 @@ app.put(
   ]),
   async (req, res) => {
     try {
+      const { slug } = req.params;
       const { title, description, content } = req.body;
-      let form = await Form.findOne({ slug: req.params.slug });
-      if (!form) {
-        return res.status(404).json({ error: "Không tìm thấy biểu mẫu" });
-      }
-      let newSlug = form.slug;
-      if (title && title !== form.title) {
-        newSlug = toSlug(title); // Dùng hàm toSlug để tạo slug chuẩn
 
+      console.log("🔍 File upload:", req.files);
+
+      const form = await Form.findOne({ slug });
+      if (!form) return res.status(404).json({ message: "Không tìm thấy biểu mẫu" });
+
+      let imageUrl = form.image;
+      let fileUrl = form.fileUrl;
+
+      // ✅ Upload ảnh lên Cloudinary từ đường dẫn file tạm thời
+      if (req.files?.["image"]) {
+        const imagePath = req.files["image"][0].path;
+        const uploadResult = await cloudinary.uploader.upload(imagePath);
+        imageUrl = uploadResult.secure_url;
+        fs.unlinkSync(imagePath); // Xóa file tạm
       }
-      const image = req.files["image"]
-        ? `http://localhost:8000/uploads/${req.files["image"][0].filename}`
-        : form.image;
-      const fileUrl = req.files["file"]
-        ? `http://localhost:8000/uploads/${req.files["file"][0].filename}`
-        : form.fileUrl;
-      form = await Form.findOneAndUpdate(
-        { slug: req.params.slug },
-        { title, slug: newSlug, description, image, content, fileUrl },
-        { new: true }
-      );
-      res.json({ message: "Cập nhật biểu mẫu thành công", form });
+
+      // ✅ Upload file tài liệu lên Cloudinary từ đường dẫn file tạm thời
+      if (req.files?.["file"]) {
+        const filePath = req.files["file"][0].path;
+        const uploadResult = await cloudinary.uploader.upload(filePath, {
+          resource_type: "raw",
+        });
+        fileUrl = uploadResult.secure_url;
+        fs.unlinkSync(filePath); // Xóa file tạm
+      }
+
+      form.title = title || form.title;
+      form.description = description || form.description;
+      form.content = content || form.content;
+      form.image = imageUrl;
+      form.fileUrl = fileUrl;
+
+      await form.save();
+
+      console.log("✅ Sau cập nhật:", form.image, form.fileUrl);
+      res.json({ message: "Cập nhật thành công", form });
     } catch (error) {
-      console.error(" Lỗi khi cập nhật biểu mẫu:", error);
-      res.status(500).json({ error: "Lỗi server", details: error.message });
+      console.error("❌ Lỗi khi cập nhật biểu mẫu:", error);
+      res.status(500).json({ message: "Lỗi server", details: error.message });
     }
   }
 );
+
 // Xóa biểu mẫu theo slug
 app.delete("/forms/:slug", async (req, res) => {
   try {
@@ -286,37 +303,52 @@ app.get("/forms/:slug", async (req, res) => {
   }
 });
 // API Upload file (Hỗ trợ ảnh & tài liệu)
-app.post("/upload", upload.single("file"), (req, res) => {
-  if (!req.file)
-    return res.status(400).json({ error: "Không có file được tải lên" });
-  const fileUrl = `http://localhost:8000/uploads/${req.file.filename}`;
+app.post("/upload/image", uploadImage.single("image"), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: "Không có ảnh được tải lên" });
+
+  const fileUrl = req.file.path; // ✅ Link ảnh trên Cloudinary
   res.json({ fileUrl });
 });
+
+app.post("/upload/file", uploadFile.single("file"), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: "Không có file được tải lên" });
+
+  const fileUrl = req.file.path; // ✅ Link file trên Cloudinary
+  res.json({ fileUrl });
+});
+
+
 //Tao bai viet
-app.post("/news", async (req, res) => {
-  const { title, description, image, content } = req.body;
-
-  if (!title || !description || !image || !content) {
-    return res.status(400).json({ error: "Thiếu thông tin bài viết" });
-  }
-
+app.post("/news", uploadImage.single("image"), async (req, res) => {
   try {
-    const slug = toSlug(title); // Dùng hàm toSlug để tạo slug chuẩn
+    const { title, description, content } = req.body;
+    if (!title || !description || !content) {
+      return res.status(400).json({ error: "Thiếu thông tin bài viết" });
+    }
+
+    const slug = toSlug(title);
+    let imageUrl = "";
+
+    // Nếu có file ảnh thì upload lên Cloudinary
+    if (req.file) {
+      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+        folder: "news", // Tạo thư mục lưu trữ trên Cloudinary
+      });
+      imageUrl = uploadResult.secure_url; // Lấy URL ảnh từ Cloudinary
+    }
 
     const newNews = new News({
       title,
       slug,
       description,
-      image,
+      image: imageUrl,
       content,
     });
 
     await newNews.save();
-    res
-      .status(201)
-      .json({ message: "Thêm bài viết thành công", news: newNews });
+    res.status(201).json({ message: "Thêm bài viết thành công", news: newNews });
   } catch (error) {
-    console.error("Lỗi khi tạo bài viết:", error);
+    console.error("❌ Lỗi khi tạo bài viết:", error);
     res.status(500).json({ error: "Lỗi server", details: error.message });
   }
 });
@@ -334,57 +366,86 @@ app.get("/news", async (req, res) => {
 //  API Lấy bài viết News theo slug
 app.get("/news/:slug", async (req, res) => {
   try {
-    const news = await News.findOne({ slug: req.params.slug });
-    if (!news) {
+    const { slug } = req.params;
+    const newsItem = await News.findOne({ slug });
+
+    if (!newsItem) {
       return res.status(404).json({ error: "Không tìm thấy bài viết" });
     }
-    res.json(news);
+
+    res.json(newsItem);
   } catch (error) {
-    console.error(" Lỗi lấy bài viết:", error);
-    res.status(500).json({ error: "Lỗi server", details: error.message });
+    console.error("Lỗi khi lấy chi tiết tin tức:", error);
+    res.status(500).json({ error: "Lỗi server" });
   }
 });
+
 //  API Cập nhật bài viết theo slug
-app.put("/news/:slug", async (req, res) => {
+app.put("/news/:slug", uploadImage.single("image"), async (req, res) => {
   try {
-    const { title, description, image, content } = req.body;
+    const { title, description, content } = req.body;
     let news = await News.findOne({ slug: req.params.slug });
+
     if (!news) {
       return res.status(404).json({ error: "Không tìm thấy bài viết" });
     }
 
     let newSlug = news.slug;
     if (title && title !== news.title) {
-       newSlug = toSlug(title);
+      newSlug = toSlug(title);
+    }
+
+    let imageUrl = news.image;
+
+    // Nếu có file ảnh mới, upload lên Cloudinary và xóa ảnh cũ
+    if (req.file) {
+      // Xóa ảnh cũ trên Cloudinary nếu có
+      if (news.image) {
+        const publicId = news.image.split("/").pop().split(".")[0]; // Lấy public_id từ URL
+        await cloudinary.uploader.destroy(`news/${publicId}`);
+      }
+
+      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+        folder: "news",
+      });
+      imageUrl = uploadResult.secure_url;
     }
 
     news = await News.findOneAndUpdate(
       { slug: req.params.slug },
-      { title, slug: newSlug, description, image, content },
+      { title, slug: newSlug, description, image: imageUrl, content },
       { new: true }
     );
 
     res.json({ message: "Cập nhật bài viết thành công", news });
   } catch (error) {
-    console.error(" Lỗi khi cập nhật bài viết:", error);
+    console.error("❌ Lỗi khi cập nhật bài viết:", error);
     res.status(500).json({ error: "Lỗi server", details: error.message });
   }
 });
+
 //  API Xóa bài viết theo slug
 app.delete("/news/:slug", async (req, res) => {
   try {
-    const news = await News.findOneAndDelete({ slug: req.params.slug });
-
+    const news = await News.findOne({ slug: req.params.slug });
     if (!news) {
       return res.status(404).json({ error: "Không tìm thấy bài viết" });
     }
 
-    res.json({ message: "Đã xóa bài viết thành công" });
+    // Xóa ảnh trên Cloudinary nếu có
+    if (news.image) {
+      const publicId = news.image.split("/").pop().split(".")[0];
+      await cloudinary.uploader.destroy(`news/${publicId}`);
+    }
+
+    await News.deleteOne({ slug: req.params.slug });
+    res.json({ message: "Xóa bài viết thành công" });
   } catch (error) {
-    console.error(" Lỗi khi xóa bài viết:", error);
+    console.error("❌ Lỗi khi xóa bài viết:", error);
     res.status(500).json({ error: "Lỗi server", details: error.message });
   }
 });
+
 // 📌 Thêm danh mục mới
 app.post("/categories", async (req, res) => {
   const { name, services } = req.body;
@@ -495,12 +556,9 @@ app.get("/service/:slug", async (req, res) => {
   }
 });
 //  Thêm bài viết mới theo dịch vụ trong danh mục
-app.post("/posts", upload.single("image"), async (req, res) => {
+app.post("/posts", uploadImage.single("image"), async (req, res) => {
   try {
     const { service_slug, title, description, content } = req.body;
-    const image = req.file
-      ? `http://localhost:8000/uploads/${req.file.filename}`
-      : null;
 
     if (!service_slug || !title || !description || !content) {
       return res.status(400).json({ error: "Thiếu thông tin bài viết" });
@@ -527,29 +585,36 @@ app.post("/posts", upload.single("image"), async (req, res) => {
         .json({ error: "Bài viết với tiêu đề này đã tồn tại" });
     }
 
+    let imageUrl = null;
+
+    // 🔹 Upload ảnh lên Cloudinary (Lưu vào thư mục `baiviet`)
+    if (req.file) {
+      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+        folder: "baiviet", // 🟢 Thay đổi thành "baiviet"
+      });
+      imageUrl = uploadResult.secure_url;
+    }
+
     // 🔹 Tạo bài viết mới
     const newPost = new PostServices({
       category_id,
       service_slug,
       title,
       slug,
-      image,
+      image: imageUrl,
       description,
       content,
     });
 
     await newPost.save();
-    res
-      .status(201)
-      .json({ message: "Thêm bài viết thành công", post: newPost });
+    res.status(201).json({ message: "Thêm bài viết thành công", post: newPost });
   } catch (error) {
-    console.error(" Lỗi thêm bài viết:", error);
+    console.error("❌ Lỗi thêm bài viết:", error);
     res.status(500).json({ error: "Lỗi server", details: error.message });
   }
 });
-
 //  Cập nhật bài viết
-app.put("/posts/:slug", upload.single("image"), async (req, res) => {
+app.put("/posts/:slug", uploadImage.single("image"), async (req, res) => {
   try {
     const { slug } = req.params;
     const { title, description, content } = req.body;
@@ -564,30 +629,61 @@ app.put("/posts/:slug", upload.single("image"), async (req, res) => {
       newSlug = toSlug(title);
     }
 
-    const image = req.file
-      ? `http://localhost:8000/uploads/${req.file.filename}`
-      : post.image;
+    let imageUrl = post.image;
+
+    // 🔹 Nếu có ảnh mới, upload lên Cloudinary (Lưu vào `baiviet`) và xóa ảnh cũ
+    if (req.file) {
+      if (post.image) {
+        try {
+          const publicId = post.image.split("/").slice(-1)[0].split(".")[0];
+          await cloudinary.uploader.destroy(`baiviet/${publicId}`); // 🟢 Xóa ảnh cũ trong "baiviet"
+        } catch (err) {
+          console.error("❌ Lỗi xóa ảnh cũ trên Cloudinary:", err);
+        }
+      }
+
+      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+        folder: "baiviet", // 🟢 Upload vào thư mục "baiviet"
+      });
+      imageUrl = uploadResult.secure_url;
+    }
 
     post = await PostServices.findOneAndUpdate(
       { slug },
-      { title, slug: newSlug, description, content, image },
+      { title, slug: newSlug, description, content, image: imageUrl },
       { new: true }
     );
 
     res.json({ message: "Cập nhật bài viết thành công", post });
   } catch (error) {
-    console.error(" Lỗi cập nhật bài viết:", error);
+    console.error("❌ Lỗi cập nhật bài viết:", error);
     res.status(500).json({ error: "Lỗi server", details: error.message });
   }
 });
-
 //  Xóa bài viết
 app.delete("/posts/:slug", async (req, res) => {
   try {
     const { slug } = req.params;
+    const post = await PostServices.findOne({ slug });
+
+    if (!post) {
+      return res.status(404).json({ error: "Không tìm thấy bài viết" });
+    }
+
+    // 🔹 Xóa ảnh trên Cloudinary nếu có
+    if (post.image) {
+      try {
+        const publicId = post.image.split("/").slice(-1)[0].split(".")[0];
+        await cloudinary.uploader.destroy(`baiviet/${publicId}`); // 🟢 Xóa ảnh từ "baiviet"
+      } catch (err) {
+        console.error("❌ Lỗi xóa ảnh trên Cloudinary:", err);
+      }
+    }
+
     await PostServices.findOneAndDelete({ slug });
     res.json({ message: "Xóa bài viết thành công" });
   } catch (error) {
+    console.error("❌ Lỗi xóa bài viết:", error);
     res.status(500).json({ error: "Lỗi server", details: error.message });
   }
 });
@@ -691,8 +787,8 @@ app.get("/categories/:categorySlug/posts", async (req, res) => {
 
 //serve static files from the uploads and assets directory
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-app.listen(8000, () => {
-  console.log("Server is running on port 8000");
+app.listen(PORT, () => {
+  console.log(`✅ Server is running on port ${PORT}`);
 });
 
 module.exports = app;

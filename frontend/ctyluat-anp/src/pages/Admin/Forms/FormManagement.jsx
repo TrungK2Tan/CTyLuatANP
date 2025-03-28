@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AdminSidebar from "../components/AdminSidebar";
-
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const FormManagement = () => {
   const [admin, setAdmin] = useState({});
   const [forms, setForms] = useState([]);
@@ -20,7 +20,7 @@ const FormManagement = () => {
   // Gọi API lấy danh sách biểu mẫu
   const fetchForms = () => {
     setLoading(true);
-    fetch("http://localhost:8000/forms")
+    fetch(`${API_URL}/forms`)
       .then((res) => res.json())
       .then((data) => {
         setForms(data);
@@ -38,7 +38,7 @@ const FormManagement = () => {
     if (!confirmDelete) return;
 
     try {
-      const res = await fetch(`http://localhost:8000/forms/${slug}`, {
+      const res = await fetch(`${API_URL}/forms/${slug}`, {
         method: "DELETE",
       });
       const data = await res.json();

@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const NewsDetailManagement = () => {
   const { slug } = useParams(); // 🔥 Sửa id -> slug
   const [news, setNews] = useState(null);
 
   useEffect(() => {
     if (!slug) return;
-
-    fetch(`http://localhost:8000/news/${slug}`) // 🔥 Sửa id -> slug
+  
+    fetch(`${API_URL}/news/${slug}`) // 🔥 Sửa lại endpoint
       .then((res) => {
         if (!res.ok) throw new Error("Không tìm thấy bài viết");
         return res.json();
@@ -16,6 +16,7 @@ const NewsDetailManagement = () => {
       .then((data) => setNews(data))
       .catch((error) => console.error("Lỗi khi lấy chi tiết tin tức:", error));
   }, [slug]);
+  
 
   if (!news) return <p>⏳ Đang tải...</p>;
 

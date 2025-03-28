@@ -6,8 +6,8 @@ import Header from "../../components/Header";
 import Banner from "../../img/detail_banner.png";
 import axios from "axios"; // Dùng axios để gọi API
 
-const itemsPerPage = 6;
-
+const itemsPerPage = 9;
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const News = () => {
   const [news, setNews] = useState([]); // State để lưu danh sách bài viết
   const [currentPage, setCurrentPage] = useState(1);
@@ -16,7 +16,7 @@ const News = () => {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/news");
+        const response = await axios.get(`${API_URL}/news`);
         setNews(response.data);
       } catch (error) {
         console.error("Lỗi khi lấy danh sách tin tức:", error);
@@ -79,7 +79,7 @@ const News = () => {
               />
               </Link>
               <div className="p-4">
-                <h3 className="text-lg font-semibold text-gray-800">
+                <h3 className="text-lg font-semibold text-gray-800 line-clamp-1">
                   {item.title}
                 </h3>
                 <p className="text-sm text-gray-600 mt-2 line-clamp-3">

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import AdminSidebar from "../components/AdminSidebar";
-
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const CreateForm = () => {
   const [form, setForm] = useState({
     title: "",
@@ -39,26 +39,33 @@ const CreateForm = () => {
         const formData = new FormData();
         formData.append("file", form.file);
 
-        const fileResponse = await axios.post("http://localhost:8000/upload", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-
+        const fileResponse = await axios.post(
+         `${API_URL}/upload/file`,
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
         fileUrl = fileResponse.data.fileUrl;
       }
 
       let imageUrl = "";
       if (form.image) {
         const imageData = new FormData();
-        imageData.append("file", form.image);
+        imageData.append("image", form.image); // ✅ Đảm bảo field là "image"
 
-        const imageResponse = await axios.post("http://localhost:8000/upload", imageData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        const imageResponse = await axios.post(
+         `${API_URL}/upload/image`,
+          imageData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
 
         imageUrl = imageResponse.data.fileUrl;
       }
 
-      const response = await axios.post("http://localhost:8000/forms", {
+      const response = await axios.post(`${API_URL}/forms`, {
         title: form.title,
         description: form.description,
         image: imageUrl,
@@ -66,12 +73,18 @@ const CreateForm = () => {
         fileUrl: fileUrl,
       });
 
-      setMessage(response.data.message);
-      setForm({ title: "", description: "", image: null, content: "", file: null });
+      setMessage("Biểu mẫu đã được tạo thành công!");
+      setForm({
+        title: "",
+        description: "",
+        image: null,
+        content: "",
+        file: null,
+      });
       setImagePreview(null);
     } catch (error) {
-      setMessage("Lỗi khi tạo biểu mẫu!");
-      console.error(error);
+      setMessage("Lỗi khi tạo biểu mẫu. Vui lòng thử lại!");
+      console.error("Lỗi khi tạo biểu mẫu:", error);
     }
   };
 
@@ -80,13 +93,19 @@ const CreateForm = () => {
       <AdminSidebar />
       <div className="w-3/4 p-6 bg-gray-100 overflow-auto">
         <div className="bg-white shadow-lg rounded-lg p-6">
-          <h2 className="text-2xl font-bold mb-4 text-gray-700">📄 Tạo Biểu Mẫu Mới</h2>
+          <h2 className="text-2xl font-bold mb-4 text-gray-700">
+            📄 Tạo Biểu Mẫu Mới
+          </h2>
 
-          {message && <p className="text-center text-green-600 mb-4">{message}</p>}
+          {message && (
+            <p className="text-center text-green-600 mb-4">{message}</p>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-gray-600 font-medium">Tiêu đề:</label>
+              <label className="block text-gray-600 font-medium">
+                Tiêu đề:
+              </label>
               <input
                 type="text"
                 name="title"
@@ -110,7 +129,9 @@ const CreateForm = () => {
             </div>
 
             <div>
-              <label className="block text-gray-600 font-medium">Chọn hình ảnh:</label>
+              <label className="block text-gray-600 font-medium">
+                Chọn hình ảnh:
+              </label>
               <input
                 type="file"
                 onChange={handleImageChange}
@@ -118,12 +139,18 @@ const CreateForm = () => {
                 className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
               {imagePreview && (
-                <img src={imagePreview} alt="Preview" className="mt-2 w-32 h-32 object-cover rounded" />
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="mt-2 w-32 h-32 object-cover rounded"
+                />
               )}
             </div>
 
             <div>
-              <label className="block text-gray-600 font-medium">Nội dung:</label>
+              <label className="block text-gray-600 font-medium">
+                Nội dung:
+              </label>
               <textarea
                 name="content"
                 value={form.content}
@@ -134,7 +161,9 @@ const CreateForm = () => {
             </div>
 
             <div>
-              <label className="block text-gray-600 font-medium">Tải tệp đính kèm:</label>
+              <label className="block text-gray-600 font-medium">
+                Tải tệp đính kèm:
+              </label>
               <input
                 type="file"
                 onChange={handleFileChange}

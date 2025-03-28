@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import AdminSidebar from "../components/AdminSidebar";
-
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const EditForm = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ const EditForm = () => {
       setAdmin(storedAdmin);
     }
 
-    fetch(`http://localhost:8000/forms/${slug}`)
+    fetch(`${API_URL}/forms/${slug}`)
       .then((res) => res.json())
       .then((data) => setForm(data))
       .catch((error) => console.error("Lỗi tải biểu mẫu:", error));
@@ -47,38 +47,36 @@ const EditForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-
-    // Thêm dữ liệu text
     formData.append("title", form.title);
     formData.append("description", form.description);
     formData.append("content", form.content);
-
-    // Thêm hình ảnh nếu có
+  
     if (selectedImage) {
       formData.append("image", selectedImage);
+      console.log("📸 Gửi ảnh:", selectedImage.name);
     }
-
-    // Thêm tệp đính kèm nếu có
     if (selectedFile) {
       formData.append("file", selectedFile);
+      console.log("📂 Gửi file:", selectedFile.name);
     }
-
+  
     try {
-      const res = await fetch(`http://localhost:8000/forms/${slug}`, {
+      const response = await fetch(`${API_URL}/forms/${slug}`, {
         method: "PUT",
-        body: formData, // Gửi FormData thay vì JSON
+        body: formData,
       });
-
-      if (res.ok) {
-        alert("✅ Cập nhật biểu mẫu thành công!");
-        navigate("/admin/quan-ly-bieu-mau");
-      } else {
-        alert("❌ Lỗi khi cập nhật biểu mẫu");
-      }
+  
+      const result = await response.json();
+      console.log("✅ Cập nhật thành công:", result);
+  
+      // Reload lại dữ liệu mới sau khi cập nhật
+      setForm(result.form);  
+      navigate("/admin/quan-ly-bieu-mau");
     } catch (error) {
-      console.error("Lỗi khi cập nhật biểu mẫu:", error);
+      console.error("❌ Lỗi cập nhật:", error);
     }
   };
+  
 
   return (
     <div className="flex h-screen">

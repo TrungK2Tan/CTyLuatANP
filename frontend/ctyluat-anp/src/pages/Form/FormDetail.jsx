@@ -14,13 +14,14 @@ import {
 } from "react-icons/fa";
 import { FaFacebookF, FaTwitter } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const FormDetail = () => {
     const { slug } = useParams();
     const [form, setForm] = useState(null);
   const [latestNews, setLatestNews] = useState([]);
     useEffect(() => {
         axios
-          .get(`http://localhost:8000/forms/${slug}`)
+          .get(`${API_URL}/forms/${slug}`)
           .then((response) => {
             setForm(response.data); // Bây giờ response.data là object, không cần [0]
           })
@@ -30,7 +31,7 @@ const FormDetail = () => {
           });
           const fetchNewsList = async () => {
             try {
-              const response = await axios.get("http://localhost:8000/news");
+              const response = await axios.get(`${API_URL}/news`);
               const allNews = response.data;
       
               // Lấy 5 bài viết mới nhất
@@ -75,12 +76,13 @@ const FormDetail = () => {
             <div className="mt-6 flex flex-col md:flex-row items-center">
               <p className="mr-2 text-gray-700 font-medium">Tải mẫu đơn</p>
               <a
-                href={form.fileUrl}
-                className="text-blue-600 underline hover:text-blue-800"
-                download
-              >
-                Tại đây
-              </a>
+  href={`${form.fileUrl}?flags=attachment`}
+  className="text-blue-600 underline hover:text-blue-800"
+  download
+>
+  Tải về
+</a>
+
             </div>
             <div className="mt-8">
               {/* Chia sẻ */}

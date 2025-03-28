@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import AdminSidebar from "../components/AdminSidebar";
-
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const FormDetailManagement = () => {
   const { slug } = useParams();
   const [admin, setAdmin] = useState({});
@@ -14,7 +14,7 @@ const FormDetailManagement = () => {
     }
 
     // Gọi API lấy thông tin chi tiết biểu mẫu
-    fetch(`http://localhost:8000/forms/${slug}`)
+    fetch(`${API_URL}/forms/${slug}`)
       .then((res) => res.json())
       .then((data) => setForm(data))
       .catch((error) => console.error("Lỗi tải chi tiết biểu mẫu:", error));

@@ -3,7 +3,7 @@ import { FaChevronDown, FaBars, FaTimes } from "react-icons/fa";
 import axios from "axios";
 import Logo from "../img/logo-anp(1).png";
 import { Link } from "react-router-dom";
-
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
@@ -18,7 +18,7 @@ const Header = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8000/categories")
+      .get(`${API_URL}/categories`)
       .then((response) => setCategories(response.data))
       .catch((error) => console.error("Lỗi lấy danh mục:", error));
   }, []);
