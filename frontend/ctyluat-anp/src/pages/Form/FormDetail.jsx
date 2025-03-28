@@ -76,13 +76,12 @@ const FormDetail = () => {
             <div className="mt-6 flex flex-col md:flex-row items-center">
               <p className="mr-2 text-gray-700 font-medium">Tải mẫu đơn</p>
               <a
-  href={`${form.fileUrl}?flags=attachment`}
-  className="text-blue-600 underline hover:text-blue-800"
-  download
->
-  Tải về
-</a>
-
+                href={form.fileUrl}
+                className="text-blue-600 underline hover:text-blue-800"
+                download
+              >
+                Tại đây
+              </a>
             </div>
             <div className="mt-8">
               {/* Chia sẻ */}

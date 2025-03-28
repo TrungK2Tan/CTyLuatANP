@@ -33,6 +33,7 @@ mongoose
 const app = express();
 app.use(express.json());
 app.use(cors({ origin: "*" }));
+
 const toSlug = (title) => {
   return title
     .toLowerCase()
@@ -454,7 +455,7 @@ app.post("/categories", async (req, res) => {
   }
 
   try {
-    const slug = toSlug(title);
+    const slug = toSlug(name); // Sửa "title" thành "name"
     const newCategory = new CategoryServices({ name, slug, services });
     await newCategory.save();
     res
@@ -464,6 +465,7 @@ app.post("/categories", async (req, res) => {
     res.status(500).json({ error: "Lỗi server", details: error.message });
   }
 });
+
 //  Lấy danh sách danh mục
 app.get("/categories", async (req, res) => {
   try {
