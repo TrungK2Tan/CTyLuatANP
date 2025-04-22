@@ -89,9 +89,9 @@ const CreateForm = () => {
   };
 
   return (
-    <div className="flex h-screen">
+<div className="flex min-h-screen">
       <AdminSidebar />
-      <div className="w-3/4 p-6 bg-gray-100 overflow-auto">
+     <div className="w-3/4 p-6 bg-gray-100 ml-[25%]">
         <div className="bg-white shadow-lg rounded-lg p-6">
           <h2 className="text-2xl font-bold mb-4 text-gray-700">
             📄 Tạo Biểu Mẫu Mới
