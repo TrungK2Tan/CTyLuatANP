@@ -537,23 +537,42 @@ app.get("/services/:categorySlug", async (req, res) => {
   }
 });
 //  Lấy chi tiết một bài viết theo slug
-app.get("/service/:slug", async (req, res) => {
+// API Lấy chi tiết bài viết theo slug
+app.get("/posts/detail/:slug", async (req, res) => {
   try {
     const { slug } = req.params;
-
-    // 🔹 Tìm bài viết theo `slug` và populate thông tin danh mục
-    const service = await PostServices.findOne({ slug }).populate(
+    
+    // 🔹 Tìm bài viết theo slug và populate thông tin danh mục và dịch vụ
+    const post = await PostServices.findOne({ slug }).populate(
       "category_id",
       "name slug"
     );
 
-    if (!service) {
+    if (!post) {
       return res.status(404).json({ error: "Không tìm thấy bài viết" });
     }
 
-    res.json(service);
+    // 🔹 Nếu có service_slug, tìm thông tin dịch vụ
+    if (post.service_slug) {
+      const category = await CategoryServices.findOne({
+        "services.slug": post.service_slug
+      });
+      
+      if (category) {
+        const service = category.services.find(s => s.slug === post.service_slug);
+        if (service) {
+          // Thêm thông tin dịch vụ vào kết quả trả về
+          post._doc.service = {
+            name: service.name,
+            slug: service.slug
+          };
+        }
+      }
+    }
+
+    res.json(post);
   } catch (error) {
-    console.error(" Lỗi lấy bài viết:", error);
+    console.error("❌ Lỗi lấy chi tiết bài viết:", error);
     res.status(500).json({ error: "Lỗi server", details: error.message });
   }
 });
