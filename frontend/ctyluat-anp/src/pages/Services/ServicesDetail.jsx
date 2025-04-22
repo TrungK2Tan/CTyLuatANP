@@ -20,7 +20,7 @@ const ServiceDetail = () => {
     const fetchServiceDetail = async () => {
       try {
         const response = await axios.get(
-          `${API_URL}/service/${postSlug}`
+           `${API_URL}/posts/detail/${postSlug}`
         );
         setPost(response.data);
       } catch (error) {

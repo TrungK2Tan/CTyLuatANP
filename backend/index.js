@@ -536,7 +536,7 @@ app.get("/services/:categorySlug", async (req, res) => {
     res.status(500).json({ error: "Lỗi server", details: error.message });
   }
 });
-//  Lấy chi tiết một bài viết theo slug
+
 // API Lấy chi tiết bài viết theo slug
 app.get("/posts/detail/:slug", async (req, res) => {
   try {
@@ -576,6 +576,7 @@ app.get("/posts/detail/:slug", async (req, res) => {
     res.status(500).json({ error: "Lỗi server", details: error.message });
   }
 });
+//-------------------------------------------------------------------------
 //  Thêm bài viết mới theo dịch vụ trong danh mục
 app.post("/posts", uploadImage.single("image"), async (req, res) => {
   try {
@@ -634,11 +635,12 @@ app.post("/posts", uploadImage.single("image"), async (req, res) => {
     res.status(500).json({ error: "Lỗi server", details: error.message });
   }
 });
+//-------------------------------------------------------------------------
 //  Cập nhật bài viết
 app.put("/posts/:slug", uploadImage.single("image"), async (req, res) => {
   try {
     const { slug } = req.params;
-    const { title, description, content } = req.body;
+    const { title, description, content, serviceId } = req.body;
     let post = await PostServices.findOne({ slug });
 
     if (!post) {
@@ -651,6 +653,33 @@ app.put("/posts/:slug", uploadImage.single("image"), async (req, res) => {
     }
 
     let imageUrl = post.image;
+    let service_slug = post.service_slug;
+    let category_id = post.category_id;
+
+    // Nếu có serviceId mới, cập nhật service_slug và category_id
+    if (serviceId) {
+      // Tìm danh mục chứa dịch vụ
+      const allCategories = await CategoryServices.find();
+      let foundService = null;
+      let foundCategory = null;
+
+      // Tìm trong tất cả danh mục
+      for (const category of allCategories) {
+        const service = category.services.find(s => s._id.toString() === serviceId);
+        if (service) {
+          foundService = service;
+          foundCategory = category;
+          break;
+        }
+      }
+
+      if (!foundService || !foundCategory) {
+        return res.status(404).json({ error: "Không tìm thấy dịch vụ" });
+      }
+
+      service_slug = foundService.slug;
+      category_id = foundCategory._id;
+    }
 
     // 🔹 Nếu có ảnh mới, upload lên Cloudinary (Lưu vào `baiviet`) và xóa ảnh cũ
     if (req.file) {
@@ -671,13 +700,62 @@ app.put("/posts/:slug", uploadImage.single("image"), async (req, res) => {
 
     post = await PostServices.findOneAndUpdate(
       { slug },
-      { title, slug: newSlug, description, content, image: imageUrl },
+      { 
+        title, 
+        slug: newSlug, 
+        description, 
+        content, 
+        image: imageUrl,
+        service_slug,
+        category_id 
+      },
       { new: true }
     );
+
+    // Thêm thông tin dịch vụ vào kết quả trả về
+    if (post.service_slug) {
+      const category = await CategoryServices.findById(post.category_id);
+      if (category) {
+        const service = category.services.find(s => s.slug === post.service_slug);
+        if (service) {
+          post._doc.service = {
+            name: service.name,
+            slug: service.slug
+          };
+        }
+      }
+    }
 
     res.json({ message: "Cập nhật bài viết thành công", post });
   } catch (error) {
     console.error("❌ Lỗi cập nhật bài viết:", error);
+    res.status(500).json({ error: "Lỗi server", details: error.message });
+  }
+});
+//-------------------------------------------------------------------------
+// API Lấy tất cả dịch vụ từ tất cả danh mục
+app.get("/services", async (req, res) => {
+  try {
+    const categories = await CategoryServices.find();
+    
+    // Tạo danh sách dịch vụ từ tất cả danh mục
+    const services = [];
+    
+    categories.forEach(category => {
+      category.services.forEach(service => {
+        services.push({
+          _id: service._id,
+          name: service.name,
+          slug: service.slug,
+          categoryId: category._id,
+          categoryName: category.name
+        });
+      });
+    });
+    
+    res.json(services);
+  } catch (error) {
+    console.error("❌ Lỗi khi lấy danh sách dịch vụ:", error);
     res.status(500).json({ error: "Lỗi server", details: error.message });
   }
 });
