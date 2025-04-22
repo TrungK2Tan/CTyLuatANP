@@ -541,7 +541,7 @@ app.get("/services/:categorySlug", async (req, res) => {
 app.get("/posts/detail/:slug", async (req, res) => {
   try {
     const { slug } = req.params;
-    
+
     // 🔹 Tìm bài viết theo slug và populate thông tin danh mục và dịch vụ
     const post = await PostServices.findOne({ slug }).populate(
       "category_id",
@@ -557,7 +557,7 @@ app.get("/posts/detail/:slug", async (req, res) => {
       const category = await CategoryServices.findOne({
         "services.slug": post.service_slug
       });
-      
+
       if (category) {
         const service = category.services.find(s => s.slug === post.service_slug);
         if (service) {
@@ -700,14 +700,14 @@ app.put("/posts/:slug", uploadImage.single("image"), async (req, res) => {
 
     post = await PostServices.findOneAndUpdate(
       { slug },
-      { 
-        title, 
-        slug: newSlug, 
-        description, 
-        content, 
+      {
+        title,
+        slug: newSlug,
+        description,
+        content,
         image: imageUrl,
         service_slug,
-        category_id 
+        category_id
       },
       { new: true }
     );
@@ -737,10 +737,10 @@ app.put("/posts/:slug", uploadImage.single("image"), async (req, res) => {
 app.get("/services", async (req, res) => {
   try {
     const categories = await CategoryServices.find();
-    
+
     // Tạo danh sách dịch vụ từ tất cả danh mục
     const services = [];
-    
+
     categories.forEach(category => {
       category.services.forEach(service => {
         services.push({
@@ -752,7 +752,7 @@ app.get("/services", async (req, res) => {
         });
       });
     });
-    
+
     res.json(services);
   } catch (error) {
     console.error("❌ Lỗi khi lấy danh sách dịch vụ:", error);
