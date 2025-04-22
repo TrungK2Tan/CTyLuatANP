@@ -60,7 +60,7 @@ const CreateNews = () => {
   return (
 <div className="flex min-h-screen">
   <AdminSidebar admin={admin} />
-  <div className="w-3/4 p-6 bg-gray-100 ml-[25%]">
+  <div className="w-3/4 p-6 bg-gray-100 ml-[20%]">
         <h1 className="text-2xl font-bold">📰 Tạo Tin Tức</h1>
         <form onSubmit={handleSubmit} className="mt-4 space-y-4" encType="multipart/form-data">
           <input type="text" placeholder="Tiêu đề..." value={title} onChange={(e) => setTitle(e.target.value)} className="w-full p-2 border rounded" required />

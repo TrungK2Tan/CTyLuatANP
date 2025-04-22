@@ -94,7 +94,7 @@ const DetailPost = () => {
   if (loading) return (
     <div className="flex min-h-screen">
       <AdminSidebar admin={admin} />
-      <div className="w-3/4 p-6 bg-gray-100 ml-[25%]">
+      <div className="w-3/4 p-6 bg-gray-100 ml-[20%]">
         <div className="flex justify-center items-center py-10">
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500"></div>
           <p className="ml-3">⏳ Đang tải...</p>
@@ -106,7 +106,7 @@ const DetailPost = () => {
   if (error) return (
     <div className="flex min-h-screen">
       <AdminSidebar admin={admin} />
-      <div className="w-3/4 p-6 bg-gray-100 ml-[25%]">
+      <div className="w-3/4 p-6 bg-gray-100 ml-[20%]">
         <div className="p-6 bg-white shadow rounded">
           <p className="text-red-500">❌ {error}</p>
           <div className="mt-4 flex space-x-4">
@@ -131,7 +131,7 @@ const DetailPost = () => {
   return (
     <div className="flex min-h-screen">
       <AdminSidebar admin={admin} />
-      <div className="w-3/4 p-6 bg-gray-100 ml-[25%]">
+      <div className="w-3/4 p-6 bg-gray-100 ml-[20%]">
         <h1 className="text-2xl font-bold mb-4">📄 Chi tiết bài viết</h1>
         
         <div className="p-6 bg-white shadow rounded">

@@ -146,7 +146,7 @@ const EditPost = () => {
     if (loading) return (
         <div className="flex min-h-screen">
             <AdminSidebar admin={admin} />
-            <div className="w-3/4 p-6 bg-gray-100 ml-[25%]">
+            <div className="w-3/4 p-6 bg-gray-100 ml-[20%]">
                 <p>🔄 Đang tải...</p>
             </div>
         </div>
@@ -155,7 +155,7 @@ const EditPost = () => {
     if (error) return (
         <div className="flex min-h-screen">
             <AdminSidebar admin={admin} />
-            <div className="w-3/4 p-6 bg-gray-100 ml-[25%]">
+            <div className="w-3/4 p-6 bg-gray-100 ml-[20%]">
                 <p className="text-red-500">{error}</p>
                 <button
                     onClick={() => navigate("/admin/quan-ly-bai-viet")}
@@ -170,7 +170,7 @@ const EditPost = () => {
     return (
         <div className="flex min-h-screen">
             <AdminSidebar admin={admin} />
-            <div className="w-3/4 p-6 bg-gray-100 ml-[25%]">
+            <div className="w-3/4 p-6 bg-gray-100 ml-[20%]">
                 <h1 className="text-2xl font-bold">✏️ Chỉnh Sửa Bài Viết</h1>
                 <div className="mt-4 bg-white p-4 rounded shadow">
                     <form onSubmit={handleUpdate} className="space-y-4" encType="multipart/form-data">

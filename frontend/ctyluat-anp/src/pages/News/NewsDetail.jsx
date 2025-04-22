@@ -181,7 +181,7 @@ const NewsDetail = () => {
         </div>
 
         {/* Cột phụ */}
-        <div className="w-full md:w-[25%] flex flex-col gap-6">
+        <div className="w-full md:w-[20%] flex flex-col gap-6">
           {/* Ô tìm kiếm */}
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 border-b pb-2 text-center md:text-left">

@@ -74,7 +74,7 @@ const EditProfile = () => {
   return (
    <div className="flex min-h-screen">
   <AdminSidebar admin={admin} />
-  <div className="w-3/4 p-6 bg-gray-100 ml-[25%]">
+  <div className="w-3/4 p-6 bg-gray-100 ml-[20%]">
         <div className="bg-white shadow-lg rounded-lg p-6 max-w-lg mx-auto">
           <h2 className="text-2xl font-bold mb-4 text-gray-700">
             ✏️ Chỉnh sửa hồ sơ

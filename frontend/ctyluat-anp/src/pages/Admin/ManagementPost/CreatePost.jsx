@@ -81,7 +81,7 @@ const CreatePost = () => {
   return (
     <div className="flex min-h-screen">
       <AdminSidebar admin={admin} />
-      <div className="w-3/4 p-6 bg-gray-100 ml-[25%]">
+      <div className="w-3/4 p-6 bg-gray-100 ml-[20%]">
         <h1 className="text-2xl font-bold">➕ Thêm bài viết mới</h1>
         
         <div className="mt-4 bg-white p-6 rounded shadow">

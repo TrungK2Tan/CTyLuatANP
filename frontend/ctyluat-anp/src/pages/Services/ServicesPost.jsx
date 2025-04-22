@@ -126,7 +126,7 @@ const ServicesPost = () => {
   return (
    <div className="flex min-h-screen">
   <AdminSidebar admin={admin} />
-  <div className="w-3/4 p-6 bg-gray-100 ml-[25%]">
+  <div className="w-3/4 p-6 bg-gray-100 ml-[20%]">
         <h1 className="text-2xl font-bold">📜 Quản lý bài viết</h1>
 
         <h2 className="text-xl font-semibold mt-4">🔹 Chọn dịch vụ</h2>

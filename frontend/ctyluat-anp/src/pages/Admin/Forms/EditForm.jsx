@@ -81,7 +81,7 @@ const EditForm = () => {
   return (
 <div className="flex min-h-screen">
   <AdminSidebar admin={admin} />
-  <div className="w-3/4 p-6 bg-gray-100 ml-[25%]">
+  <div className="w-3/4 p-6 bg-gray-100 ml-[20%]">
         <h1 className="text-2xl font-bold">✏️ Chỉnh sửa biểu mẫu</h1>
 
         <form onSubmit={handleSubmit} className="bg-white p-4 rounded shadow mt-4">
