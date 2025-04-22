@@ -19,7 +19,7 @@ const AdminSidebar = ({ admin }) => {
   };
 
   return (
-    <div className="w-1/4 bg-gray-900 text-white p-6 flex flex-col h-screen">
+    <div className="w-1/4 bg-gray-900 text-white p-6 flex flex-col fixed top-0 left-0 h-screen overflow-y-auto">
       {/* Thông tin Admin */}
       <div className="flex flex-col items-center text-center mb-6">
         <div className="w-16 h-16 bg-blue-500 text-white flex items-center justify-center text-2xl font-bold rounded-full">

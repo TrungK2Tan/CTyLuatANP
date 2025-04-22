@@ -56,12 +56,9 @@ const FormManagement = () => {
   };
 
   return (
-    <div className="flex h-screen">
-      {/* Sidebar */}
-      <AdminSidebar admin={admin} />
-
-      {/* Main Content */}
-      <div className="w-3/4 p-6 bg-gray-100">
+    <div className="flex min-h-screen">
+  <AdminSidebar admin={admin} />
+  <div className="w-3/4 p-6 bg-gray-100 ml-[25%]">
         <h1 className="text-2xl font-bold">📑 Quản lý biểu mẫu</h1>
 
         <div className="mt-4 bg-white p-4 rounded shadow">
