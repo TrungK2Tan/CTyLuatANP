@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import AdminSidebar from "../components/AdminSidebar";
-
 
 const EditNews = () => {
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
@@ -16,9 +15,10 @@ const EditNews = () => {
   const [newImage, setNewImage] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
   const [admin, setAdmin] = useState({});
-
+  const contentEditableRef = useRef(null);
+  
   useEffect(() => {
-       const storedAdmin = JSON.parse(localStorage.getItem("admin"));
+    const storedAdmin = JSON.parse(localStorage.getItem("admin"));
     if (storedAdmin) {
       setAdmin(storedAdmin);
     }
@@ -32,6 +32,11 @@ const EditNews = () => {
       .then((data) => {
         setNews(data);
         setImagePreview(data.image); // Hiển thị ảnh cũ
+        
+        // Đặt nội dung HTML vào contentEditable sau khi nhận dữ liệu
+        if (contentEditableRef.current) {
+          contentEditableRef.current.innerHTML = data.content || '';
+        }
       })
       .catch((error) => console.error("Lỗi khi lấy tin tức:", error));
   }, [slug]);
@@ -42,12 +47,23 @@ const EditNews = () => {
     setImagePreview(URL.createObjectURL(file)); // Hiển thị ảnh mới trước khi upload
   };
 
+  const handleContentChange = (e) => {
+    // Cập nhật nội dung từ trình soạn thảo
+    const content = e.target.innerHTML;
+    setNews({ ...news, content });
+  };
+
   const handleUpdate = async (e) => {
     e.preventDefault();
+    // Cập nhật nội dung từ contentEditable trước khi gửi
+    if (contentEditableRef.current) {
+      setNews(prev => ({...prev, content: contentEditableRef.current.innerHTML}));
+    }
+    
     const formData = new FormData();
     formData.append("title", news.title);
     formData.append("description", news.description);
-    formData.append("content", news.content);
+    formData.append("content", contentEditableRef.current ? contentEditableRef.current.innerHTML : news.content);
     if (newImage) {
       formData.append("image", newImage);
     }
@@ -70,7 +86,7 @@ const EditNews = () => {
   };
 
   return (
-       <div className="flex min-h-screen">
+    <div className="flex min-h-screen">
       <AdminSidebar admin={admin} />
       <div className="w-3/4 p-6 bg-gray-100 ml-[25%]">
         <h1 className="text-2xl font-bold">✏️ Chỉnh Sửa Tin Tức</h1>
@@ -78,17 +94,65 @@ const EditNews = () => {
           <form onSubmit={handleUpdate} className="space-y-4" encType="multipart/form-data">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Tiêu đề</label>
-              <input type="text" value={news.title} onChange={(e) => setNews({ ...news, title: e.target.value })} className="w-full p-2 border rounded" required />
+              <input 
+                type="text" 
+                value={news.title} 
+                onChange={(e) => setNews({ ...news, title: e.target.value })} 
+                className="w-full p-2 border rounded" 
+                required 
+              />
             </div>
             
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Mô tả</label>
-              <input type="text" value={news.description} onChange={(e) => setNews({ ...news, description: e.target.value })} className="w-full p-2 border rounded" required />
+              <input 
+                type="text" 
+                value={news.description} 
+                onChange={(e) => setNews({ ...news, description: e.target.value })} 
+                className="w-full p-2 border rounded" 
+                required 
+              />
             </div>
             
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Nội dung</label>
-              <textarea value={news.content} onChange={(e) => setNews({ ...news, content: e.target.value })} className="w-full p-2 border rounded" rows="5" required />
+              <div className="border rounded mb-2">
+                <div className="bg-gray-100 p-2 border-b flex justify-between">
+                  <div className="flex space-x-2">
+                    <button type="button" onClick={() => document.execCommand('bold')} className="px-2 py-1 bg-white border rounded hover:bg-gray-100">
+                      <strong>B</strong>
+                    </button>
+                    <button type="button" onClick={() => document.execCommand('italic')} className="px-2 py-1 bg-white border rounded hover:bg-gray-100">
+                      <em>I</em>
+                    </button>
+                    <button type="button" onClick={() => document.execCommand('underline')} className="px-2 py-1 bg-white border rounded hover:bg-gray-100">
+                      <u>U</u>
+                    </button>
+                    <button type="button" onClick={() => document.execCommand('formatBlock', false, 'h1')} className="px-2 py-1 bg-white border rounded hover:bg-gray-100">
+                      H1
+                    </button>
+                    <button type="button" onClick={() => document.execCommand('formatBlock', false, 'h2')} className="px-2 py-1 bg-white border rounded hover:bg-gray-100">
+                      H2
+                    </button>
+                    <button type="button" onClick={() => document.execCommand('formatBlock', false, 'p')} className="px-2 py-1 bg-white border rounded hover:bg-gray-100">
+                      P
+                    </button>
+                    <button type="button" onClick={() => document.execCommand('insertUnorderedList')} className="px-2 py-1 bg-white border rounded hover:bg-gray-100">
+                      • List
+                    </button>
+                  </div>
+                </div>
+                <div
+                  ref={contentEditableRef}
+                  contentEditable="true"
+                  className="p-3 min-h-[300px] news-content"
+                  onInput={handleContentChange}
+                  onBlur={handleContentChange}
+                ></div>
+              </div>
+              <p className="text-xs text-gray-500">
+                Sử dụng thanh công cụ phía trên để định dạng nội dung.
+              </p>
             </div>
             
             <div>
