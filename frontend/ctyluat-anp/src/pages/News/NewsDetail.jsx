@@ -12,12 +12,24 @@ import {
   FaUser,
 } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
 const NewsDetail = () => {
   const { slug } = useParams();
   const [news, setNews] = useState(null);
   const [relatedNews, setRelatedNews] = useState([]);
   const [latestNews, setLatestNews] = useState([]);
+
+  // State cho form liên hệ
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    message: "",
+  });
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const fetchNewsDetail = async () => {
@@ -33,14 +45,10 @@ const NewsDetail = () => {
       try {
         const response = await axios.get(`${API_URL}/news`);
         const allNews = response.data;
-
-        // Lọc bài viết liên quan (trừ bài viết hiện tại)
         const related = allNews
           .filter((item) => item.slug !== slug)
           .slice(0, 10);
         setRelatedNews(related);
-
-        // Lấy 3 bài viết mới nhất
         setLatestNews(allNews.slice(-5));
       } catch (error) {
         console.error("Lỗi khi lấy danh sách bài viết:", error);
@@ -50,6 +58,36 @@ const NewsDetail = () => {
     fetchNewsDetail();
     fetchNewsList();
   }, [slug]);
+
+  // Handlers cho form liên hệ
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(`${API_URL}/api/send-email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setSuccessMessage("Gửi email thành công!");
+        setErrorMessage("");
+        setFormData({ name: "", phone: "", email: "", message: "" });
+      } else {
+        setErrorMessage("Gửi email thất bại! Vui lòng thử lại.");
+        setSuccessMessage("");
+      }
+    } catch (error) {
+      setErrorMessage("Lỗi kết nối đến server!");
+      setSuccessMessage("");
+    }
+  };
 
   if (!news) {
     return <div className="text-center py-10">Đang tải...</div>;
@@ -70,6 +108,7 @@ const NewsDetail = () => {
           <span className="text-gray-700 font-medium">{news.title}</span>
         </div>
       </div>
+
       <div className="container mx-auto w-full md:w-[90%] lg:w-[70%] py-10 flex flex-col md:flex-row gap-10">
         {/* Nội dung chính */}
         <div className="w-full md:w-[75%]">
@@ -80,6 +119,7 @@ const NewsDetail = () => {
               className="text-gray-700 mt-4 leading-loose border-t pt-4"
               dangerouslySetInnerHTML={{ __html: news.content }}
             ></div>
+
             <div className="mt-8">
               {/* Chia sẻ */}
               <div className="flex flex-wrap items-center space-x-3">
@@ -103,7 +143,13 @@ const NewsDetail = () => {
                 <h3 className="text-xl font-semibold mb-4">
                   Để lại thông tin tư vấn
                 </h3>
-                <form className="space-y-4">
+                {successMessage && (
+                  <p className="text-green-600 mb-4">{successMessage}</p>
+                )}
+                {errorMessage && (
+                  <p className="text-red-600 mb-4">{errorMessage}</p>
+                )}
+                <form className="space-y-4" onSubmit={handleSubmit}>
                   <div className="flex gap-4">
                     <div className="w-1/2">
                       <label className="flex items-center gap-2 text-gray-600">
@@ -111,7 +157,11 @@ const NewsDetail = () => {
                       </label>
                       <input
                         type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
                         className="w-full p-2 border rounded-md"
+                        required
                       />
                     </div>
                     <div className="w-1/2">
@@ -120,7 +170,11 @@ const NewsDetail = () => {
                       </label>
                       <input
                         type="text"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
                         className="w-full p-2 border rounded-md"
+                        required
                       />
                     </div>
                   </div>
@@ -130,7 +184,11 @@ const NewsDetail = () => {
                     </label>
                     <input
                       type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
                       className="w-full p-2 border rounded-md"
+                      required
                     />
                   </div>
                   <div>
@@ -138,16 +196,24 @@ const NewsDetail = () => {
                       <FaRegFileAlt /> Nội dung
                     </label>
                     <textarea
+                      name="message"
+                      value={formData.message}
+                      onChange={handleChange}
                       className="w-full p-2 border rounded-md"
                       rows="4"
+                      required
                     ></textarea>
                   </div>
-                  <button className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600">
+                  <button
+                    type="submit"
+                    className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600"
+                  >
                     Gửi thông tin
                   </button>
                 </form>
               </div>
             </div>
+
             {/* Bài viết liên quan */}
             <div className="mt-10">
               <h3 className="text-2xl font-semibold mb-6">
@@ -181,7 +247,7 @@ const NewsDetail = () => {
         </div>
 
         {/* Cột phụ */}
-        <div className="w-full md:w-[20%] flex flex-col gap-6">
+        <div className="w-full md:w-[25%] flex flex-col gap-6">
           {/* Ô tìm kiếm */}
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 border-b pb-2 text-center md:text-left">
@@ -237,7 +303,7 @@ const NewsDetail = () => {
             </ul>
           </div>
 
-          {/* Ô bài viết mới nhất */}
+          {/* Bài viết mới nhất */}
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 border-b pb-2">
               BÀI VIẾT MỚI NHẤT
@@ -266,8 +332,10 @@ const NewsDetail = () => {
           </div>
         </div>
       </div>
+
       <Footer />
-      {/*Coopy right */}
+
+      {/* Copyright */}
       <div className="bg-blue-950 w-full">
         <div className="container mx-auto text-white w-[70%] border-t border-white pt-4 flex justify-between text-lg py-4">
           <span>Copyright © 2021 congtyluatanp.com . All rights reserved.</span>

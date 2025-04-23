@@ -11,17 +11,28 @@ import {
   FaTwitter,
   FaUser,
 } from "react-icons/fa6";
+
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
 const ServiceDetail = () => {
   const { postSlug } = useParams();
   const [post, setPost] = useState(null);
   const [latestNews, setLatestNews] = useState([]);
+
+  // Thêm state cho form liên hệ
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    message: "",
+  });
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
   useEffect(() => {
     const fetchServiceDetail = async () => {
       try {
-        const response = await axios.get(
-           `${API_URL}/posts/detail/${postSlug}`
-        );
+        const response = await axios.get(`${API_URL}/posts/detail/${postSlug}`);
         setPost(response.data);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu dịch vụ:", error);
@@ -32,8 +43,6 @@ const ServiceDetail = () => {
       try {
         const response = await axios.get(`${API_URL}/news`);
         const allServices = response.data;
-
-        // Lấy 5 tin tuc mới nhất
         setLatestNews(allServices.slice(-5));
       } catch (error) {
         console.error("Lỗi khi lấy danh sách dịch vụ:", error);
@@ -43,6 +52,36 @@ const ServiceDetail = () => {
     fetchServiceDetail();
     fetchNewsList();
   }, [postSlug]);
+
+  // Thêm handlers cho form liên hệ
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(`${API_URL}/api/send-email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setSuccessMessage("Gửi email thành công!");
+        setErrorMessage("");
+        setFormData({ name: "", phone: "", email: "", message: "" });
+      } else {
+        setErrorMessage("Gửi email thất bại! Vui lòng thử lại.");
+        setSuccessMessage("");
+      }
+    } catch (error) {
+      setErrorMessage("Lỗi kết nối đến server!");
+      setSuccessMessage("");
+    }
+  };
 
   if (!post) {
     return <div className="text-center py-10">Đang tải...</div>;
@@ -71,7 +110,6 @@ const ServiceDetail = () => {
           <div className="bg-white shadow-lg rounded-lg p-6">
             <h2 className="text-3xl font-bold text-gray-900">{post.title}</h2>
             <p className="text-gray-700 mt-4">{post.description}</p>
-
             <div
               className="text-gray-700 mt-4 leading-loose border-t pt-4"
               dangerouslySetInnerHTML={{ __html: post.content }}
@@ -101,7 +139,11 @@ const ServiceDetail = () => {
               <h3 className="text-xl font-semibold mb-4">
                 Để lại thông tin tư vấn
               </h3>
-              <form className="space-y-4">
+              {successMessage && (
+                <p className="text-green-600 mb-4">{successMessage}</p>
+              )}
+              {errorMessage && <p className="text-red-600 mb-4">{errorMessage}</p>}
+              <form className="space-y-4" onSubmit={handleSubmit}>
                 <div className="flex gap-4">
                   <div className="w-1/2">
                     <label className="flex items-center gap-2 text-gray-600">
@@ -109,7 +151,11 @@ const ServiceDetail = () => {
                     </label>
                     <input
                       type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
                       className="w-full p-2 border rounded-md"
+                      required
                     />
                   </div>
                   <div className="w-1/2">
@@ -118,7 +164,11 @@ const ServiceDetail = () => {
                     </label>
                     <input
                       type="text"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
                       className="w-full p-2 border rounded-md"
+                      required
                     />
                   </div>
                 </div>
@@ -128,7 +178,11 @@ const ServiceDetail = () => {
                   </label>
                   <input
                     type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
                     className="w-full p-2 border rounded-md"
+                    required
                   />
                 </div>
                 <div>
@@ -136,11 +190,18 @@ const ServiceDetail = () => {
                     <FaRegFileAlt /> Nội dung
                   </label>
                   <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
                     className="w-full p-2 border rounded-md"
                     rows="4"
+                    required
                   ></textarea>
                 </div>
-                <button className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600">
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600"
+                >
                   Gửi thông tin
                 </button>
               </form>

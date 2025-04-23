@@ -14,37 +14,77 @@ import {
 } from "react-icons/fa";
 import { FaFacebookF, FaTwitter } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
 const FormDetail = () => {
-    const { slug } = useParams();
-    const [form, setForm] = useState(null);
+  const { slug } = useParams();
+  const [form, setForm] = useState(null);
   const [latestNews, setLatestNews] = useState([]);
-    useEffect(() => {
-        axios
-          .get(`${API_URL}/forms/${slug}`)
-          .then((response) => {
-            setForm(response.data); // Bây giờ response.data là object, không cần [0]
-          })
-          .catch((error) => {
-            console.error("Lỗi lấy biểu mẫu:", error);
-            setForm(null); // Xử lý trường hợp lỗi
-          });
-          const fetchNewsList = async () => {
-            try {
-              const response = await axios.get(`${API_URL}/news`);
-              const allNews = response.data;
-      
-              // Lấy 5 bài viết mới nhất
-              setLatestNews(allNews.slice(-5));
-            } catch (error) {
-              console.error("Lỗi khi lấy danh sách bài viết:", error);
-            }
-          };
-          fetchNewsList();
-      }, [slug]);
-      
-  
-    if (!form) return <p>Đang tải...</p>;
+
+  // Thêm state cho form liên hệ
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    message: "",
+  });
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    axios
+      .get(`${API_URL}/forms/${slug}`)
+      .then((response) => {
+        setForm(response.data);
+      })
+      .catch((error) => {
+        console.error("Lỗi lấy biểu mẫu:", error);
+        setForm(null);
+      });
+
+    const fetchNewsList = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/news`);
+        const allNews = response.data;
+        setLatestNews(allNews.slice(-5));
+      } catch (error) {
+        console.error("Lỗi khi lấy danh sách bài viết:", error);
+      }
+    };
+    fetchNewsList();
+  }, [slug]);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(`${API_URL}/api/send-email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setSuccessMessage("Gửi email thành công!");
+        setErrorMessage("");
+        setFormData({ name: "", phone: "", email: "", message: "" });
+      } else {
+        setErrorMessage("Gửi email thất bại! Vui lòng thử lại.");
+        setSuccessMessage("");
+      }
+    } catch (error) {
+      setErrorMessage("Lỗi kết nối đến server!");
+      setSuccessMessage("");
+    }
+  };
+
+  if (!form) return <p>Đang tải...</p>;
 
   return (
     <div className="relative w-full min-h-screen flex flex-col bg-gray-100">
@@ -83,8 +123,78 @@ const FormDetail = () => {
                 Tại đây
               </a>
             </div>
+
+            {/* Form Liên hệ */}
             <div className="mt-8">
-              {/* Chia sẻ */}
+              <h3 className="text-xl font-semibold mb-4">Để lại thông tin tư vấn</h3>
+              {successMessage && <p className="text-green-600">{successMessage}</p>}
+              {errorMessage && <p className="text-red-600">{errorMessage}</p>}
+              <form className="space-y-4" onSubmit={handleSubmit}>
+                <div className="flex gap-4">
+                  <div className="w-1/2">
+                    <label className="flex items-center gap-2 text-gray-600">
+                      <FaUser /> Họ tên
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      className="w-full p-2 border rounded-md"
+                      required
+                    />
+                  </div>
+                  <div className="w-1/2">
+                    <label className="flex items-center gap-2 text-gray-600">
+                      <FaPhone /> Điện thoại
+                    </label>
+                    <input
+                      type="text"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      className="w-full p-2 border rounded-md"
+                      required
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="flex items-center gap-2 text-gray-600">
+                    <FaEnvelope /> Email
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="w-full p-2 border rounded-md"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="flex items-center gap-2 text-gray-600">
+                    <FaRegFileAlt /> Nội dung
+                  </label>
+                  <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    className="w-full p-2 border rounded-md"
+                    rows="4"
+                    required
+                  ></textarea>
+                </div>
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600"
+                >
+                  Gửi thông tin
+                </button>
+              </form>
+            </div>
+
+            {/* Chia sẻ */}
+            <div className="mt-8">
               <div className="flex flex-wrap items-center space-x-3">
                 <span className="font-semibold text-lg">Chia sẻ:</span>
                 <a
@@ -100,62 +210,12 @@ const FormDetail = () => {
                   <FaTwitter />
                 </a>
               </div>
-
-              {/* Form Liên hệ */}
-              <div className="mt-8">
-                <h3 className="text-xl font-semibold mb-4">
-                  Để lại thông tin tư vấn
-                </h3>
-                <form className="space-y-4">
-                  <div className="flex gap-4">
-                    <div className="w-1/2">
-                      <label className="flex items-center gap-2 text-gray-600">
-                        <FaUser /> Họ tên
-                      </label>
-                      <input
-                        type="text"
-                        className="w-full p-2 border rounded-md"
-                      />
-                    </div>
-                    <div className="w-1/2">
-                      <label className="flex items-center gap-2 text-gray-600">
-                        <FaPhone /> Điện thoại
-                      </label>
-                      <input
-                        type="text"
-                        className="w-full p-2 border rounded-md"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="flex items-center gap-2 text-gray-600">
-                      <FaEnvelope /> Email
-                    </label>
-                    <input
-                      type="email"
-                      className="w-full p-2 border rounded-md"
-                    />
-                  </div>
-                  <div>
-                    <label className="flex items-center gap-2 text-gray-600">
-                      <FaRegFileAlt /> Nội dung
-                    </label>
-                    <textarea
-                      className="w-full p-2 border rounded-md"
-                      rows="4"
-                    ></textarea>
-                  </div>
-                  <button className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md hover:bg-blue-600">
-                    Gửi thông tin
-                  </button>
-                </form>
-              </div>
             </div>
           </div>
         </div>
 
         {/* Cột phụ */}
-        <div className="w-full md:w-[20%] flex flex-col gap-6">
+        <div className="w-full md:w-[25%] flex flex-col gap-6">
           {/* Ô tìm kiếm */}
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 border-b pb-2 text-center md:text-left">
@@ -177,33 +237,33 @@ const FormDetail = () => {
           </div>
 
           {/* Dịch vụ luật sư */}
-         <div className="bg-white p-6 rounded-lg shadow-md">
-           <h2 className="text-xl font-semibold text-gray-900 mb-4 border-b pb-2 text-center md:text-left">
-             DỊCH VỤ LUẬT SƯ
-           </h2>
-           <ul className="list-none space-y-3">
-             {[
-               { title: "Luật Dân Sự", slug: "luat-dan-su" },
-               { title: "Luật Hình Sự", slug: "luat-hinh-su" },
-               { title: "Luật Hôn Nhân Gia Đình", slug: "luat-hon-nhan-gia-dinh" },
-               { title: "Tranh Chấp Đất Đai", slug: "tranh-chap-dat-dai" },
-               { title: "Kinh Doanh Thương Mại", slug: "kinh-doanh-thuong-mai" },
-               { title: "Tư Vấn Thừa Kế", slug: "tu-van-thua-ke" },
-             ].map((item, index) => (
-               <li key={index}>
-                 <Link
-                   to={`/danh-muc/dich-vu-luat-su/${item.slug}`}
-                   className="flex items-center p-2 rounded-lg border border-gray-200 transition-all duration-300 hover:bg-blue-100 cursor-pointer"
-                 >
-                   <FaChevronRight className="mr-2 text-blue-500" />
-                   <span className="text-gray-700 font-medium">{item.title}</span>
-                 </Link>
-               </li>
-             ))}
-           </ul>
-         </div>
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4 border-b pb-2 text-center md:text-left">
+              DỊCH VỤ LUẬT SƯ
+            </h2>
+            <ul className="list-none space-y-3">
+              {[
+                { title: "Luật Dân Sự", slug: "luat-dan-su" },
+                { title: "Luật Hình Sự", slug: "luat-hinh-su" },
+                { title: "Luật Hôn Nhân Gia Đình", slug: "luat-hon-nhan-gia-dinh" },
+                { title: "Tranh Chấp Đất Đai", slug: "tranh-chap-dat-dai" },
+                { title: "Kinh Doanh Thương Mại", slug: "kinh-doanh-thuong-mai" },
+                { title: "Tư Vấn Thừa Kế", slug: "tu-van-thua-ke" },
+              ].map((item, index) => (
+                <li key={index}>
+                  <Link
+                    to={`/danh-muc/dich-vu-luat-su/${item.slug}`}
+                    className="flex items-center p-2 rounded-lg border border-gray-200 transition-all duration-300 hover:bg-blue-100 cursor-pointer"
+                  >
+                    <FaChevronRight className="mr-2 text-blue-500" />
+                    <span className="text-gray-700 font-medium">{item.title}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-          {/* Ô bài viết mới nhất */}
+          {/* Bài viết mới nhất */}
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 border-b pb-2">
               BÀI VIẾT MỚI NHẤT
@@ -234,7 +294,8 @@ const FormDetail = () => {
       </div>
 
       <Footer />
-      {/*Coopy right */}
+
+      {/* Copyright */}
       <div className="bg-blue-950 w-full">
         <div className="container mx-auto text-white w-[70%] border-t border-white pt-4 flex justify-between text-lg py-4">
           <span>Copyright © 2021 congtyluatanp.com . All rights reserved.</span>
