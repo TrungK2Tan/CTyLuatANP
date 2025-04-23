@@ -67,8 +67,18 @@ const NewsManagement = () => {
   };
 
   const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+  setCurrentPage(pageNumber);
+  // Scroll to top of the table with smooth animation
+  const tableElement = document.querySelector('.bg-white.p-4');
+  if (tableElement) {
+    const yOffset = -20; // Offset từ top để tránh bị cắt header
+    const y = tableElement.getBoundingClientRect().top + window.pageYOffset + yOffset;
+    window.scrollTo({
+      top: y,
+      behavior: 'smooth'
+    });
+  }
+};
 
   const handleItemsPerPageChange = (e) => {
     setItemsPerPage(Number(e.target.value));

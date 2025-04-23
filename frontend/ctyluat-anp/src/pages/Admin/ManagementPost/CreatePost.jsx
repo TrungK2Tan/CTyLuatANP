@@ -16,7 +16,9 @@ const CreatePost = () => {
     description: "",
     content: "",
   });
-  
+  // Thêm state cho thông báo
+  const [notification, setNotification] = useState({ show: false, message: '', type: '' });
+
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -35,8 +37,7 @@ const CreatePost = () => {
           return [...acc, ...category.services];
         }, []);
         setServices(servicesList);
-        
-        // If serviceSlug was provided in URL params, preselect it
+
         if (serviceSlug) {
           const service = servicesList.find(s => s.slug === serviceSlug);
           if (service) {
@@ -47,15 +48,35 @@ const CreatePost = () => {
       .catch((error) => console.error("Lỗi khi lấy danh mục:", error));
   }, [serviceSlug]);
 
+  const resetForm = () => {
+    setNewPost({
+      title: "",
+      image: "",
+      description: "",
+      content: "",
+    });
+    setImageFile(null);
+    // Reset file input by clearing its value
+    const fileInput = document.querySelector('input[type="file"]');
+    if (fileInput) {
+      fileInput.value = '';
+    } 
+  };
+
+  const showNotification = (message, type) => {
+    setNotification({ show: true, message, type });
+    setTimeout(() => {
+      setNotification({ show: false, message: '', type: '' });
+    }, 3000);
+  };
+
   const addPost = async () => {
-    if (!selectedService) return alert("Hãy chọn một dịch vụ trước!");
-    if (
-      !imageFile ||
-      !newPost.title ||
-      !newPost.description ||
-      !newPost.content
-    ) {
-      alert("Vui lòng điền đầy đủ thông tin và chọn ảnh!");
+    if (!selectedService) {
+      showNotification("⚠️ Hãy chọn một dịch vụ trước!", "error");
+      return;
+    }
+    if (!imageFile || !newPost.title || !newPost.description || !newPost.content) {
+      showNotification("⚠️ Vui lòng điền đầy đủ thông tin và chọn ảnh!", "error");
       return;
     }
 
@@ -70,11 +91,11 @@ const CreatePost = () => {
       await axios.post(`${API_URL}/posts`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-    alert("Thêm bài viết thành công!");
-    navigate("/admin/quan-ly-bai-viet");
+      showNotification("✅ Thêm bài viết thành công!", "success");
+      resetForm();
     } catch (error) {
       console.error("Lỗi khi thêm bài viết:", error.response?.data || error);
-      alert("Lỗi khi thêm bài viết. Kiểm tra console để biết chi tiết.");
+      showNotification("❌ Lỗi khi thêm bài viết. Vui lòng thử lại!", "error");
     }
   };
 
@@ -83,23 +104,43 @@ const CreatePost = () => {
       <AdminSidebar admin={admin} />
       <div className="w-3/4 p-6 bg-gray-100 ml-[20%]">
         <h1 className="text-2xl font-bold">➕ Thêm bài viết mới</h1>
-        
+
+        {/* Thông báo */}
+        {notification.show && (
+          <div
+            className={`mt-4 p-4 rounded-lg transition-all duration-500 ${notification.type === 'success'
+              ? 'bg-green-100 text-green-700 border border-green-400'
+              : 'bg-red-100 text-red-700 border border-red-400'
+              }`}
+          >
+            {notification.message}
+          </div>
+        )}
+
         <div className="mt-4 bg-white p-6 rounded shadow">
-          <h2 className="text-xl font-semibold mb-4">Chọn dịch vụ</h2>
-          <div className="flex flex-wrap mb-4">
-            {services.map((service) => (
-              <button
-                key={service.slug}
-                className={`p-2 m-1 border ${
-                  selectedService?.slug === service.slug
-                    ? "bg-blue-500 text-white"
-                    : "bg-white"
-                }`}
-                onClick={() => setSelectedService(service)}
+          <div className="mb-6">
+            <div className="flex items-center gap-2">
+              <h2 className="text-xl font-semibold">🔹 Chọn dịch vụ:</h2>
+              <select
+                className="border rounded-md p-2 min-w-[300px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={selectedService?.slug || ''}
+                onChange={(e) => {
+                  const service = services.find(s => s.slug === e.target.value);
+                  if (service) {
+                    setSelectedService(service);
+                  }
+                }}
               >
-                {service.name}
-              </button>
-            ))}
+                <option value="" disabled>
+                  -- Chọn dịch vụ --
+                </option>
+                {services.map((service) => (
+                  <option key={service.slug} value={service.slug}>
+                    {service.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <h2 className="text-xl font-semibold mb-2">Thông tin bài viết</h2>
@@ -114,16 +155,17 @@ const CreatePost = () => {
                 onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700">Hình ảnh</label>
               <input
                 type="file"
+                accept="image/*"
                 className="border p-2 w-full mt-1 rounded"
                 onChange={(e) => setImageFile(e.target.files[0])}
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700">Mô tả ngắn</label>
               <textarea
@@ -134,7 +176,7 @@ const CreatePost = () => {
                 onChange={(e) => setNewPost({ ...newPost, description: e.target.value })}
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700">Nội dung bài viết</label>
               <textarea
@@ -145,18 +187,18 @@ const CreatePost = () => {
                 onChange={(e) => setNewPost({ ...newPost, content: e.target.value })}
               />
             </div>
-            
+
             <div className="flex space-x-2">
               <button
                 onClick={addPost}
-                className="bg-green-500 text-white p-2 rounded hover:bg-green-600"
+                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors"
               >
                 Thêm bài viết
               </button>
-              
+
               <button
                 onClick={() => navigate("/admin/quan-ly-bai-viet")}
-                className="bg-gray-500 text-white p-2 rounded hover:bg-gray-600"
+                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors"
               >
                 Hủy
               </button>
