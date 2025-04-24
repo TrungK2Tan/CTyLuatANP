@@ -58,8 +58,8 @@ const Contact = () => {
         {/* Thông tin liên hệ */}
         <div className="w-full md:w-1/2 space-y-6">
           {[{ title: "Văn phòng Hồ Chí Minh", address: "Tầng 1, 232 Nguyễn Thị Minh Khai, Quận 3, TP.HCM" },
-            { title: "Trụ sở chính", address: "Tổ dân phố Viên 3 - Bắc Từ Liêm - Hà Nội" },
-            { title: "Văn phòng Hà Nội", address: "Tầng 5 Tòa N07, Trần Đăng Ninh, Q. Cầu Giấy, TP. Hà Nội" }].map((item, index) => (
+          { title: "Trụ sở chính", address: "Tổ dân phố Viên 3 - Bắc Từ Liêm - Hà Nội" },
+          { title: "Văn phòng Hà Nội", address: "Tầng 5 Tòa N07, Trần Đăng Ninh, Q. Cầu Giấy, TP. Hà Nội" }].map((item, index) => (
             <div key={index} className="border p-4 rounded-lg shadow-md">
               <h3 className="font-semibold text-lg flex items-center gap-2">
                 <FaMapMarkedAlt className="text-blue-500" /> {item.title}
@@ -85,7 +85,7 @@ const Contact = () => {
 
         {/* Form liên hệ */}
         <div className="w-full md:w-1/2 bg-gray-100 p-6 rounded-lg shadow-md">
-          <h3 className="text-xl font-semibold mb-4">Để lại thông tin</h3>
+          <h3 className="text-xl font-semibold mb-4">Để lại thông tin tư vấn</h3>
           {successMessage && <p className="text-green-600">{successMessage}</p>}
           {errorMessage && <p className="text-red-600">{errorMessage}</p>}
           <form className="space-y-4" onSubmit={handleSubmit}>

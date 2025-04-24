@@ -29,7 +29,10 @@ import EditNews from "./pages/Admin/ManagementNews/EditNews";
 import CreateNews from "./pages/Admin/ManagementNews/CreateNews";
 import Services from "./pages/Services/Services";
 import ServiceDetail from "./pages/Services/ServicesDetail";
-import ServicesPost from "./pages/Services/ServicesPost";
+import NewsManagementPost from "./pages/Admin/ManagementPost/NewsManagementPost";
+import CreatePost from "./pages/Admin/ManagementPost/CreatePost";
+import DetailPost from "./pages/Admin/ManagementPost/DetailPost";
+import EditPost from "./pages/Admin/ManagementPost/EditPost";
 import LegalConsultPopup from "./popup/LegalConsultPopup";
 
 const PrivateRoute = ({ element }) => {
@@ -105,9 +108,25 @@ const AppContent = () => {
           path="/admin/quan-ly-dich-vu-hoi-dap"
           element={<PrivateRoute exact element={<ServicesManagement />} />}
         />
+         {/* Quản lý Bài Viết  */}
          <Route
           path="/admin/quan-ly-bai-viet"
-          element={<PrivateRoute exact element={<ServicesPost />} />}
+          element={<PrivateRoute exact element={<NewsManagementPost />} />}
+        />
+          <Route
+                  // chi tiết bài viết
+          path="/admin/quan-ly-bai-viet/:slug"
+          element={<PrivateRoute exact element={<DetailPost />} />}
+        />
+        <Route
+                 // chỉnh sửa bài viết
+          path="/admin/quan-ly-bai-viet/sua/:slug"
+          element={<PrivateRoute exact element={<EditPost />} />}
+        />
+        <Route
+                  // tạo bài viết
+          path="/admin/tao-bai-viet"
+          element={<PrivateRoute exact element={<CreatePost />} />}
         />
       </Routes>
 
