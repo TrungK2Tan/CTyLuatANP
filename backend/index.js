@@ -16,6 +16,9 @@ const { authenticateToken } = require("./utilities");
 require("dotenv").config();
 const cloudinary = require("cloudinary").v2;
 const { sendContactEmail } = require("./sendmail");
+// Add new imports
+const mammoth = require('mammoth');
+const fetch = require('node-fetch');
 const PORT = process.env.PORT || 8000;
 // ✅ Sử dụng biến môi trường thay vì config.json
 const mongoURI = process.env.MONGO_URI;
@@ -290,13 +293,25 @@ app.get("/forms", async (req, res) => {
     res.status(500).json({ error: "Lỗi server" });
   }
 });
-// API Lấy chi tiết biểu mẫu theo slug
+//------------------------------------------------------------------
+// Thêm route mới để lấy và chuyển đổi file Word
 app.get("/forms/:slug", async (req, res) => {
   try {
     const form = await Form.findOne({ slug: req.params.slug });
     if (!form) {
       return res.status(404).json({ error: "Không tìm thấy biểu mẫu" });
     }
+
+    // Tải file Word từ Cloudinary
+    const response = await fetch(form.fileUrl);
+    const buffer = await response.buffer();
+
+    // Chuyển đổi Word sang HTML sử dụng mammoth
+    const result = await mammoth.convertToHtml({ buffer });
+    
+    // Thêm nội dung HTML đã chuyển đổi vào response
+    form._doc.wordContent = result.value;
+
     res.json(form);
   } catch (error) {
     console.error("Lỗi lấy biểu mẫu:", error);
