@@ -99,9 +99,9 @@ const Services = () => {
         <button
           key={i}
           onClick={() => handlePageChange(i)}
-          className={`px-3 py-2 rounded-md text-sm font-medium ${currentPage === i
-              ? "bg-blue-600 text-white hover:bg-blue-700"
-              : "bg-white border border-gray-300 hover:bg-gray-50"
+          className={`w-8 h-8 flex items-center justify-center rounded-md text-sm font-medium ${currentPage === i
+            ? "bg-orange-500 text-white hover:bg-orange-600"
+            : "bg-white border border-gray-300 hover:bg-gray-50"
             }`}
         >
           {i}
@@ -137,7 +137,7 @@ const Services = () => {
       <Header />
 
       {/* Banner Section */}
-       <div className="relative w-full h-[220px] mt-20">
+      <div className="relative w-full h-[220px] mt-20">
         <img src={Banner} className="w-full h-full object-cover" alt="Banner" />
         <div className="absolute inset-0 flex items-center h-full w-[70%] mx-auto">
           <h2 className="text-4xl font-semibold text-white">
@@ -231,58 +231,32 @@ const Services = () => {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex justify-center items-center mt-12 space-x-2">
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className={`flex items-center px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${currentPage === 1
+              <div className="flex justify-center items-center mt-12 w-full"> {/* Thêm w-full */}
+                <div className="flex items-center space-x-2 justify-center"> {/* Thêm justify-center */}
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className={`flex items-center justify-center w-8 h-8 rounded-md text-sm ${currentPage === 1
                       ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                       : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-300"
-                    }`}
-                >
-                  <svg
-                    className="w-5 h-5 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                      }`}
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 19l-7-7 7-7"
-                    />
-                  </svg>
-                  Trước
-                </button>
+                    <span>&lt;</span>
+                  </button>
 
-                <div className="flex items-center space-x-2">
                   {renderPaginationButtons()}
-                </div>
 
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className={`flex items-center px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${currentPage === totalPages
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className={`flex items-center justify-center w-8 h-8 rounded-md text-sm ${currentPage === totalPages
                       ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                       : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-300"
-                    }`}
-                >
-                  Sau
-                  <svg
-                    className="w-5 h-5 ml-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                      }`}
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </button>
+                    <span>&gt;</span>
+                  </button>
+                </div>
               </div>
             )}
           </>
